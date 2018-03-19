@@ -726,7 +726,7 @@
 #define Z_PROBE_OFFSET_FROM_EXTRUDER -2.45  // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
-#define MIN_PROBE_EDGE 10
+#define MIN_PROBE_EDGE 21
 
 // X and Y axis travel speed (mm/m) between probes
 #define XY_PROBE_SPEED 8000
@@ -965,12 +965,11 @@
   #define GRID_MAX_POINTS_X 3
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
-
   // Set the boundaries for probing (where the probe can reach).
-  #define LEFT_PROBE_BED_POSITION 21
-  #define RIGHT_PROBE_BED_POSITION (X_BED_SIZE - 21)
-  #define FRONT_PROBE_BED_POSITION 21
-  #define BACK_PROBE_BED_POSITION (Y_BED_SIZE - 21)
+  #define LEFT_PROBE_BED_POSITION MIN_PROBE_EDGE
+  #define RIGHT_PROBE_BED_POSITION (X_BED_SIZE - MIN_PROBE_EDGE)
+  #define FRONT_PROBE_BED_POSITION MIN_PROBE_EDGE
+  #define BACK_PROBE_BED_POSITION (Y_BED_SIZE - MIN_PROBE_EDGE)
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
@@ -993,17 +992,6 @@
 
   #endif
 
-#elif ENABLED(AUTO_BED_LEVELING_3POINT)
-
-  // 3 arbitrary points to probe.
-  // A simple cross-product is used to estimate the plane of the bed.
-  #define ABL_PROBE_PT_1_X 22
-  #define ABL_PROBE_PT_1_Y 22
-  #define ABL_PROBE_PT_2_X 22
-  #define ABL_PROBE_PT_2_Y 128
-  #define ABL_PROBE_PT_3_X 128
-  #define ABL_PROBE_PT_3_Y 128
-
 #elif ENABLED(AUTO_BED_LEVELING_UBL)
 
   //===========================================================================
@@ -1016,12 +1004,15 @@
   #define GRID_MAX_POINTS_X 10      // Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
+<<<<<<< HEAD
   #define UBL_PROBE_PT_1_X 20       // Probing points for 3-Point leveling of the mesh
   #define UBL_PROBE_PT_1_Y 135
   #define UBL_PROBE_PT_2_X 20
   #define UBL_PROBE_PT_2_Y 20
   #define UBL_PROBE_PT_3_X 135
   #define UBL_PROBE_PT_3_Y 20
+=======
+>>>>>>> 53362b81cceba396c11c98e71eb96fb5ec77d6fd
   #define UBL_MESH_EDIT_MOVES_Z     // Sophisticated users prefer no movement of nozzle
   #define UBL_SAVE_ACTIVE_ON_M500   // Save the currently active mesh in the current slot on M500
 
@@ -1041,6 +1032,19 @@
   //#define MESH_G28_REST_ORIGIN // After homing all axes ('G28' or 'G28 XYZ') rest Z at Z_MIN_POS
 
 #endif // BED_LEVELING
+
+/**
+ * Points to probe for all 3-point Leveling procedures.
+ * Override if the automatically selected points are inadequate.
+ */
+#if ENABLED(AUTO_BED_LEVELING_3POINT) || ENABLED(AUTO_BED_LEVELING_UBL)
+  //#define PROBE_PT_1_X 15
+  //#define PROBE_PT_1_Y 180
+  //#define PROBE_PT_2_X 15
+  //#define PROBE_PT_2_Y 20
+  //#define PROBE_PT_3_X 170
+  //#define PROBE_PT_3_Y 20
+#endif
 
 /**
  * Use the LCD controller for bed leveling
