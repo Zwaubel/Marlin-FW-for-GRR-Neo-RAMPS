@@ -647,10 +647,10 @@ void Planner::init() {
 
         /*  At this point, %11:%10:%9 contains the new estimation of x. */
 
-        /*  Finally, we must correct the result. Estimate remainder as*/
-        /*  (1<<24) - x*d*/
-        /*  %11:%10:%9 = x*/
-        /*  %8:%7:%6 = d = interval" "\n\t" /*  */
+        /*  Finally, we must correct the result. Estimate remainder as */
+        /*  (1<<24) - x*d */
+        /*  %11:%10:%9 = x */
+        /*  %8:%7:%6 = d = interval" "\n\t" */
         " ldi %3,1" "\n\t"
         " clr %2" "\n\t"
         " clr %1" "\n\t"

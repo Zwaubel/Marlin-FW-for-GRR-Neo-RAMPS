@@ -129,7 +129,7 @@ class Stepper {
 
     #endif // !LIN_ADVANCE
 
-    static int32_t acceleration_time, deceleration_time;
+    static uint32_t acceleration_time, deceleration_time;
     static uint8_t step_loops, step_loops_nominal;
 
     static hal_timer_t OCR1A_nominal;

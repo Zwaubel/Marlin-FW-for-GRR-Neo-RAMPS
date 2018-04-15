@@ -153,7 +153,7 @@ volatile uint32_t Stepper::step_events_completed = 0; // The number of step even
 
 #endif // LIN_ADVANCE
 
-int32_t Stepper::acceleration_time, Stepper::deceleration_time;
+uint32_t Stepper::acceleration_time, Stepper::deceleration_time;
 
 volatile int32_t Stepper::count_position[NUM_AXIS] = { 0 };
 volatile signed char Stepper::count_direction[NUM_AXIS] = { 1, 1, 1, 1 };
