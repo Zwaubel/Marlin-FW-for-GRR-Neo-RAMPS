@@ -581,7 +581,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 300, 300, 6, 80 }
+#define DEFAULT_MAX_FEEDRATE          { 150, 150, 6, 80 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -1029,15 +1029,6 @@
   #define GRID_MAX_POINTS_X 10      // Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
-<<<<<<< HEAD
-  #define UBL_PROBE_PT_1_X 20       // Probing points for 3-Point leveling of the mesh
-  #define UBL_PROBE_PT_1_Y 135
-  #define UBL_PROBE_PT_2_X 20
-  #define UBL_PROBE_PT_2_Y 20
-  #define UBL_PROBE_PT_3_X 135
-  #define UBL_PROBE_PT_3_Y 20
-=======
->>>>>>> 53362b81cceba396c11c98e71eb96fb5ec77d6fd
   #define UBL_MESH_EDIT_MOVES_Z     // Sophisticated users prefer no movement of nozzle
   #define UBL_SAVE_ACTIVE_ON_M500   // Save the currently active mesh in the current slot on M500
 
