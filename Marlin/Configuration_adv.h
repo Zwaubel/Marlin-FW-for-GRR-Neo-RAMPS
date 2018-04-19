@@ -616,7 +616,7 @@
   /**
    * Auto-report SdCard status with M27 S<seconds>
    */
-  //#define AUTO_REPORT_SD_STATUS
+  #define AUTO_REPORT_SD_STATUS
 
 #endif // SDSUPPORT
 
@@ -1412,11 +1412,6 @@
  * Auto-report temperatures with M155 S<seconds>
  */
 #define AUTO_REPORT_TEMPERATURES
-
-/**
- * Auto-report SdCard status with M27 S<seconds>
- */
-#define AUTO_REPORT_SD_STATUS
 
 /**
  * Include capabilities in M115 output
