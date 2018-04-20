@@ -613,7 +613,7 @@
  */
 #define DEFAULT_XJERK                  5.0
 #define DEFAULT_YJERK                  5.0
-#define DEFAULT_ZJERK                  0.1
+#define DEFAULT_ZJERK                  1.0
 #define DEFAULT_EJERK                  5.0
 
 /**
@@ -941,8 +941,8 @@
  *   With an LCD controller the process is guided step-by-step.
  */
 //#define AUTO_BED_LEVELING_3POINT
-#define AUTO_BED_LEVELING_LINEAR
-//#define AUTO_BED_LEVELING_BILINEAR
+//#define AUTO_BED_LEVELING_LINEAR
+#define AUTO_BED_LEVELING_BILINEAR
 //#define AUTO_BED_LEVELING_UBL
 //#define MESH_BED_LEVELING
 
