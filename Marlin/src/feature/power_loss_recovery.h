@@ -29,6 +29,7 @@
 
 #include "../sd/cardreader.h"
 #include "../core/types.h"
+#include "../inc/MarlinConfig.h"
 #include "../inc/MarlinConfigPre.h"
 
 #define SAVE_INFO_INTERVAL_MS 0
