@@ -197,7 +197,7 @@ void save_job_recovery_info() {
     job_recovery_info.feedrate = feedrate_mm_s;
     COPY(job_recovery_info.target_temperature, thermalManager.target_temperature);
     #if HAS_HEATER_BED
-    job_recovery_info.target_temperature_bed = thermalManager.target_temperature_bed;
+      job_recovery_info.target_temperature_bed = thermalManager.target_temperature_bed;
     #endif
     COPY(job_recovery_info.fanSpeeds, fanSpeeds);
 
