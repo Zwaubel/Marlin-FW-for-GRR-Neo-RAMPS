@@ -620,7 +620,7 @@
 #define DEFAULT_XJERK                  5.0
 #define DEFAULT_YJERK                  5.0
 #define DEFAULT_ZJERK                  1.0
-#define DEFAULT_EJERK                  5.0
+#define DEFAULT_EJERK                  50.0
 
 /**
  * Realtime Jerk Control
@@ -1803,7 +1803,9 @@
 // affecting heaters, and the fan if FAN_SOFT_PWM is enabled.
 // However, control resolution will be halved for each increment;
 // at zero value, there are 128 effective control positions.
-#define SOFT_PWM_SCALE 6
+#if ENABLED(FAN_SOFT_PWM)
+  #define SOFT_PWM_SCALE 6
+#endif
 
 // If SOFT_PWM_SCALE is set to a value higher than 0, dithering can
 // be used to mitigate the associated resolution loss. If enabled,
