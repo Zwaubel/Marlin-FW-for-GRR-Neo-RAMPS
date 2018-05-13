@@ -305,7 +305,7 @@ void print_line_from_here_to_there(const float &sx, const float &sy, const float
 
   // If the end point of the line is closer to the nozzle, flip the direction,
   // moving from the end to the start. On very small lines the optimization isn't worth it.
-  if (dist_end < dist_start && (INTERSECTION_CIRCLE_RADIUS) < FABS(line_length))
+  if (dist_end < dist_start && (INTERSECTION_CIRCLE_RADIUS) < ABS(line_length))
     return print_line_from_here_to_there(ex, ey, ez, sx, sy, sz);
 
   // Decide whether to retract & bump
@@ -427,7 +427,7 @@ inline bool turn_on_heaters() {
         #endif
     #endif
         thermalManager.setTargetBed(g26_bed_temp);
-        while (abs(thermalManager.degBed() - g26_bed_temp) > 3) {
+        while (ABS(thermalManager.degBed() - g26_bed_temp) > 3) {
 
           #if ENABLED(NEWPANEL)
             if (is_lcd_clicked()) return exit_from_g26();
@@ -450,7 +450,7 @@ inline bool turn_on_heaters() {
 
   // Start heating the nozzle and wait for it to reach temperature.
   thermalManager.setTargetHotend(g26_hotend_temp, 0);
-  while (abs(thermalManager.degHotend(0) - g26_hotend_temp) > 3) {
+  while (ABS(thermalManager.degHotend(0) - g26_hotend_temp) > 3) {
 
     #if ENABLED(NEWPANEL)
       if (is_lcd_clicked()) return exit_from_g26();
@@ -500,7 +500,7 @@ inline bool prime_nozzle() {
         #endif
         G26_line_to_destination(planner.max_feedrate_mm_s[E_AXIS] / 15.0);
         set_destination_from_current();
-        stepper.synchronize();    // Without this synchronize, the purge is more consistent,
+        planner.synchronize();    // Without this synchronize, the purge is more consistent,
                                   // but because the planner has a buffer, we won't be able
                                   // to stop as quickly. So we put up with the less smooth
                                   // action to give the user a more responsive 'Stop'.
@@ -773,7 +773,7 @@ void GcodeSuite::G26() {
 
       #if ENABLED(ARC_SUPPORT)
 
-        #define ARC_LENGTH(quarters)  (INTERSECTION_CIRCLE_RADIUS * PI * (quarters) / 2)
+        #define ARC_LENGTH(quarters)  (INTERSECTION_CIRCLE_RADIUS * M_PI * (quarters) / 2)
         float sx = circle_x + INTERSECTION_CIRCLE_RADIUS,   // default to full circle
               ex = circle_x + INTERSECTION_CIRCLE_RADIUS,
               sy = circle_y, ey = circle_y,
