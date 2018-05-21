@@ -587,7 +587,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 150, 150, 5, 80 }
+#define DEFAULT_MAX_FEEDRATE          { 90, 90, 4, 85 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -751,7 +751,7 @@
  */
 #define X_PROBE_OFFSET_FROM_EXTRUDER -20  // X offset: -left  +right  [of the nozzle]
 #define Y_PROBE_OFFSET_FROM_EXTRUDER 0  // Y offset: -front +behind [the nozzle]
-#define Z_PROBE_OFFSET_FROM_EXTRUDER -2.0  // Z offset: -below +above  [the nozzle]
+#define Z_PROBE_OFFSET_FROM_EXTRUDER -2.45  // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 21
