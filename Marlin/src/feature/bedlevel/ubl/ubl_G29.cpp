@@ -304,10 +304,10 @@
 
     // Check for commands that require the printer to be homed
     if (may_move) {
+      if (axis_unhomed_error()) gcode.home_all_axes();
       #if ENABLED(DUAL_X_CARRIAGE)
         if (active_extruder != 0) tool_change(0);
       #endif
-      if (axis_unhomed_error()) gcode.home_all_axes();
     }
 
     // Invalidate Mesh Points. This command is a little bit asymmetrical because
@@ -1169,8 +1169,6 @@
    */
   void unified_bed_leveling::g29_eeprom_dump() {
     uint8_t cccc;
-    int kkkk;
-    uint16_t crc = 0;
 
     SERIAL_ECHO_START();
     SERIAL_ECHOLNPGM("EEPROM Dump:");
@@ -1180,8 +1178,7 @@
       print_hex_word(i);
       SERIAL_ECHOPGM(": ");
       for (uint16_t j = 0; j < 16; j++) {
-        kkkk = i + j;
-        persistentStore.read_data(kkkk, &cccc, sizeof(uint8_t), &crc);
+        persistentStore.read_data(i + j, &cccc, sizeof(uint8_t));
         print_hex_byte(cccc);
         SERIAL_ECHO(' ');
       }
