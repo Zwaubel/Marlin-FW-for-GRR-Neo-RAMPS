@@ -25,8 +25,10 @@
  */
 // normal size or plus?
 //#define ANYCUBIC_KOSSEL_PLUS
+
 // Anycubic Probe version 1 or 2 see README.md; 0 for no probe
 #define ANYCUBIC_PROBE_VERSION 0
+
 // Heated Bed:
 // 0 ... no heated bed
 // 1 ... aluminium heated bed with "BuildTak-like" sticker
@@ -168,6 +170,17 @@
 
 // For Cyclops or any "multi-extruder" that shares a single nozzle.
 //#define SINGLENOZZLE
+#if ENABLED(SINGLENOZZLE)
+  // Parameters for filament retract / prime on toolchange
+  #define SINGLENOZZLE_SWAP_LENGTH          12  // (mm)
+  #define SINGLENOZZLE_SWAP_RETRACT_SPEED 3600  // (mm/m)
+  #define SINGLENOZZLE_SWAP_PRIME_SPEED   3600  // (mm/m)
+  //#define SINGLENOZZLE_SWAP_PARK
+  #if ENABLED(SINGLENOZZLE_SWAP_PARK)
+    #define SINGLENOZZLE_TOOLCHANGE_XY    { X_MIN_POS + 10, Y_MIN_POS + 10 }
+    #define SINGLENOZZLE_PARK_XY_FEEDRATE 6000  // (mm/m)
+  #endif
+#endif
 
 /**
  * Průša MK2 Single Nozzle Multi-Material Multiplexer, and variants.
@@ -216,7 +229,7 @@
   #define PARKING_EXTRUDER_SOLENOIDS_DELAY 250        // Delay (ms) for magnetic field. No delay if 0 or not defined.
   #define PARKING_EXTRUDER_PARKING_X { -78, 184 }     // X positions for parking the extruders
   #define PARKING_EXTRUDER_GRAB_DISTANCE 1            // mm to move beyond the parking point to grab the extruder
-  #define PARKING_EXTRUDER_SECURITY_RAISE 5           // Z-raise before parking
+  //#define MANUAL_SOLENOID_CONTROL                   // Manual control of docking solenoids with M380 S / M381
 #endif
 
 /**
@@ -233,7 +246,6 @@
   #define SWITCHING_TOOLHEAD_Y_SECURITY    10         // (mm) Security distance Y axis
   #define SWITCHING_TOOLHEAD_Y_CLEAR       60         // (mm) Minimum distance from dock for unobstructed X axis
   #define SWITCHING_TOOLHEAD_X_POS        { 215, 0 }  // (mm) X positions for parking the extruders
-  #define SWITCHING_TOOLHEAD_SECURITY_RAISE 5         // (mm) Z-raise before parking
 #endif
 
 /**
@@ -571,9 +583,6 @@
   // and processor overload (too many expensive sqrt calls).
   #define DELTA_SEGMENTS_PER_SECOND 80
 
-  // Convert feedrates to apply to the Effector instead of the Carriages
-  //#define DELTA_FEEDRATE_SCALING
-
   // After homing move down to a height where XY movement is unconstrained
   #define DELTA_HOME_TO_SAFE_ZONE
 
@@ -596,29 +605,29 @@
 
   #if ENABLED(DELTA_AUTO_CALIBRATION) || ENABLED(DELTA_CALIBRATION_MENU)
     // Set the radius for the calibration probe points - max DELTA_PRINTABLE_RADIUS for non-eccentric probes
-    #define DELTA_CALIBRATION_RADIUS DELTA_PRINTABLE_RADIUS - MIN_PROBE_EDGE  // mm
+    #define DELTA_CALIBRATION_RADIUS DELTA_PRINTABLE_RADIUS - MIN_PROBE_EDGE  // (mm)
     // Set the steprate for papertest probing
-    #define PROBE_MANUALLY_STEP 0.05 // mm
+    #define PROBE_MANUALLY_STEP 0.05 // (mm)
   #endif
 
   #if ENABLED(ANYCUBIC_KOSSEL_PLUS)
     // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-    #define DELTA_PRINTABLE_RADIUS 116.0 // mm
+    #define DELTA_PRINTABLE_RADIUS 116.0 // (mm)
     // Center-to-center distance of the holes in the diagonal push rods.
-    #define DELTA_DIAGONAL_ROD 267 // mm
+    #define DELTA_DIAGONAL_ROD 267 // (mm)
       // Horizontal offset from middle of printer to smooth rod center.
-    #define DELTA_SMOOTH_ROD_OFFSET 186 // mm
+    #define DELTA_SMOOTH_ROD_OFFSET 186 // (mm)
     // Horizontal offset of the universal joints on the end effector.
-    #define DELTA_EFFECTOR_OFFSET 31 // mm
+    #define DELTA_EFFECTOR_OFFSET 31 // (mm)
     // Horizontal offset of the universal joints on the carriages.
-    #define DELTA_CARRIAGE_OFFSET 20.6 // mm
+    #define DELTA_CARRIAGE_OFFSET 20.6 // (mm)
     // Horizontal distance bridged by diagonal push rods when effector is centered.
     #define DELTA_RADIUS (DELTA_SMOOTH_ROD_OFFSET-(DELTA_EFFECTOR_OFFSET)-(DELTA_CARRIAGE_OFFSET))  //mm  Get this value from auto calibrate
   #else
     // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-    #define DELTA_PRINTABLE_RADIUS 90.0 // mm
+    #define DELTA_PRINTABLE_RADIUS 90.0 // (mm)
     // Center-to-center distance of the holes in the diagonal push rods.
-    #define DELTA_DIAGONAL_ROD 218.0 // mm
+    #define DELTA_DIAGONAL_ROD 218.0 // (mm)
     // Horizontal distance bridged by diagonal push rods when effector is centered.
     #define DELTA_RADIUS 97.0 //mm  Get this value from auto calibrate
   #endif
@@ -686,7 +695,7 @@
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
 #define X_MIN_ENDSTOP_INVERTING false  // set to true to invert the logic of the endstop.
 #define Y_MIN_ENDSTOP_INVERTING false  // set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING (ANYCUBIC_PROBE_VERSION + 0 == 2) // V1 is NC, V2 is NO
+#define Z_MIN_ENDSTOP_INVERTING (ANYCUBIC_PROBE_VERSION + 0 == 1) // V1 is NO, V2 is NC
 #define X_MAX_ENDSTOP_INVERTING false  // set to true to invert the logic of the endstop.
 #define Y_MAX_ENDSTOP_INVERTING false  // set to true to invert the logic of the endstop.
 #define Z_MAX_ENDSTOP_INVERTING false  // set to true to invert the logic of the endstop.
@@ -979,11 +988,11 @@
 #define Y_PROBE_OFFSET_FROM_EXTRUDER 0     // Y offset: -front +behind [the nozzle]
 
 #if ANYCUBIC_PROBE_VERSION == 2
-  #define Z_PROBE_OFFSET_FROM_EXTRUDER -16.8     // Z offset: -below +above  [the nozzle]
+  #define Z_PROBE_OFFSET_FROM_EXTRUDER -16.8  // Z offset: -below +above  [the nozzle]
 #elif ANYCUBIC_PROBE_VERSION == 1
-  #define Z_PROBE_OFFSET_FROM_EXTRUDER -19.0 // Z offset: -below +above  [the nozzle]
+  #define Z_PROBE_OFFSET_FROM_EXTRUDER -19.0  // Z offset: -below +above  [the nozzle]
 #else
-  #define Z_PROBE_OFFSET_FROM_EXTRUDER 0 // Z offset: -below +above  [the nozzle]
+  #define Z_PROBE_OFFSET_FROM_EXTRUDER   0    // Z offset: -below +above  [the nozzle]
 #endif
 
 // Certain types of probes need to stay away from edges
@@ -1118,6 +1127,9 @@
 #define Y_MAX_POS DELTA_PRINTABLE_RADIUS
 #define Z_MAX_POS MANUAL_Z_HOME_POS
 
+// Z raise distance for tool-change, as needed for some extruders
+#define TOOLCHANGE_ZRAISE     2  // (mm)
+
 /**
  * Software Endstops
  *
@@ -1162,6 +1174,18 @@
   #define FIL_RUNOUT_PULLUP          // Use internal pullup for filament runout pins.
   //#define FIL_RUNOUT_PULLDOWN      // Use internal pulldown for filament runout pins.
   #define FILAMENT_RUNOUT_SCRIPT "M600"
+
+  // After a runout is detected, continue printing this length of filament
+  // before executing the runout script. Useful for a sensor at the end of
+  // a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.
+  //#define FILAMENT_RUNOUT_DISTANCE_MM 25
+
+  #ifdef FILAMENT_RUNOUT_DISTANCE_MM
+    // Enable this option to use an encoder disc that toggles the runout pin
+    // as the filament moves. (Be sure to set FILAMENT_RUNOUT_DISTANCE_MM
+    // large enough to avoid false positives.)
+    //#define FILAMENT_MOTION_SENSOR
+  #endif
 #endif
 
 //===========================================================================
@@ -1653,6 +1677,13 @@
 #define DISPLAY_CHARSET_HD44780 JAPANESE
 
 /**
+ * Info Screen Style (0:Classic, 1:Prusa)
+ *
+ * :[0:'Classic', 1:'Prusa']
+ */
+#define LCD_INFO_SCREEN_STYLE 0
+
+/**
  * SD CARD
  *
  * SD Card support is disabled by default. If your controller has an SD slot,
@@ -2015,6 +2046,15 @@
 // http://github.com/android444/Silvergate
 //
 //#define SILVER_GATE_GLCD_CONTROLLER
+
+//
+// Extensible UI
+//
+// Enable third-party or vendor customized user interfaces that aren't
+// packaged with Marlin. Source code for the user interface will need to
+// be placed in "src/lcd/extensible_ui/lib"
+//
+//#define EXTENSIBLE_UI
 
 //=============================================================================
 //============================  Other Controllers  ============================

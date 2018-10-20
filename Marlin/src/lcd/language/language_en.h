@@ -687,6 +687,12 @@
 #ifndef MSG_INIT_EEPROM
   #define MSG_INIT_EEPROM                     _UxGT("Initialize EEPROM")
 #endif
+#ifndef MSG_SD_UPDATE
+  #define MSG_SD_UPDATE                       _UxGT("SD Update")
+#endif
+#ifndef MSG_RESET_PRINTER
+  #define MSG_RESET_PRINTER                   _UxGT("Reset Printer")
+#endif
 #ifndef MSG_REFRESH
   #define MSG_REFRESH                         _UxGT("Refresh")
 #endif
@@ -750,8 +756,8 @@
 #ifndef MSG_CONTROL_RETRACTF
   #define MSG_CONTROL_RETRACTF                _UxGT("Retract  V")
 #endif
-#ifndef MSG_CONTROL_RETRACT_ZLIFT
-  #define MSG_CONTROL_RETRACT_ZLIFT           _UxGT("Hop mm")
+#ifndef MSG_CONTROL_RETRACT_ZHOP
+  #define MSG_CONTROL_RETRACT_ZHOP            _UxGT("Hop mm")
 #endif
 #ifndef MSG_CONTROL_RETRACT_RECOVER
   #define MSG_CONTROL_RETRACT_RECOVER         _UxGT("UnRet mm")
@@ -767,6 +773,21 @@
 #endif
 #ifndef MSG_AUTORETRACT
   #define MSG_AUTORETRACT                     _UxGT("AutoRetr.")
+#endif
+#ifndef MSG_FILAMENT_SWAP_LENGTH
+  #define MSG_FILAMENT_SWAP_LENGTH            _UxGT("Retract Distance")
+#endif
+#ifndef MSG_TOOL_CHANGE
+  #define MSG_TOOL_CHANGE                      _UxGT("Tool Change")
+#endif
+#ifndef MSG_TOOL_CHANGE_ZLIFT
+  #define MSG_TOOL_CHANGE_ZLIFT                _UxGT("Z Raise")
+#endif
+#ifndef MSG_SINGLENOZZLE_PRIME_SPD
+  #define MSG_SINGLENOZZLE_PRIME_SPD          _UxGT("Prime Speed")
+#endif
+#ifndef MSG_SINGLENOZZLE_RETRACT_SPD
+  #define MSG_SINGLENOZZLE_RETRACT_SPD        _UxGT("Retract Speed")
 #endif
 #ifndef MSG_FILAMENTCHANGE
   #define MSG_FILAMENTCHANGE                  _UxGT("Change filament")

@@ -160,6 +160,17 @@
 
 // For Cyclops or any "multi-extruder" that shares a single nozzle.
 //#define SINGLENOZZLE
+#if ENABLED(SINGLENOZZLE)
+  // Parameters for filament retract / prime on toolchange
+  #define SINGLENOZZLE_SWAP_LENGTH          12  // (mm)
+  #define SINGLENOZZLE_SWAP_RETRACT_SPEED 3600  // (mm/m)
+  #define SINGLENOZZLE_SWAP_PRIME_SPEED   3600  // (mm/m)
+  //#define SINGLENOZZLE_SWAP_PARK
+  #if ENABLED(SINGLENOZZLE_SWAP_PARK)
+    #define SINGLENOZZLE_TOOLCHANGE_XY    { X_MIN_POS + 10, Y_MIN_POS + 10 }
+    #define SINGLENOZZLE_PARK_XY_FEEDRATE 6000  // (mm/m)
+  #endif
+#endif
 
 /**
  * Průša MK2 Single Nozzle Multi-Material Multiplexer, and variants.
@@ -208,7 +219,7 @@
   #define PARKING_EXTRUDER_SOLENOIDS_DELAY 250        // Delay (ms) for magnetic field. No delay if 0 or not defined.
   #define PARKING_EXTRUDER_PARKING_X { -78, 184 }     // X positions for parking the extruders
   #define PARKING_EXTRUDER_GRAB_DISTANCE 1            // mm to move beyond the parking point to grab the extruder
-  #define PARKING_EXTRUDER_SECURITY_RAISE 5           // Z-raise before parking
+  //#define MANUAL_SOLENOID_CONTROL                   // Manual control of docking solenoids with M380 S / M381
 #endif
 
 /**
@@ -225,7 +236,6 @@
   #define SWITCHING_TOOLHEAD_Y_SECURITY    10         // (mm) Security distance Y axis
   #define SWITCHING_TOOLHEAD_Y_CLEAR       60         // (mm) Minimum distance from dock for unobstructed X axis
   #define SWITCHING_TOOLHEAD_X_POS        { 215, 0 }  // (mm) X positions for parking the extruders
-  #define SWITCHING_TOOLHEAD_SECURITY_RAISE 5         // (mm) Z-raise before parking
 #endif
 
 /**
@@ -567,16 +577,16 @@
 
   #if ENABLED(DELTA_AUTO_CALIBRATION) || ENABLED(DELTA_CALIBRATION_MENU)
     // Set the radius for the calibration probe points - max DELTA_PRINTABLE_RADIUS for non-eccentric probes
-    #define DELTA_CALIBRATION_RADIUS 121.5 // mm
+    #define DELTA_CALIBRATION_RADIUS 121.5 // (mm)
     // Set the steprate for papertest probing
-    #define PROBE_MANUALLY_STEP 0.05 // mm
+    #define PROBE_MANUALLY_STEP 0.05 // (mm)
   #endif
 
   // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-  #define DELTA_PRINTABLE_RADIUS 151.0 // mm
+  #define DELTA_PRINTABLE_RADIUS 151.0 // (mm)
 
   // Center-to-center distance of the holes in the diagonal push rods.
-  #define DELTA_DIAGONAL_ROD 356.5 // mm
+  #define DELTA_DIAGONAL_ROD 356.5 // (mm)
 
   // height from z=0 to home position
   #define DELTA_HEIGHT 352.00 // get this value from auto calibrate
@@ -1016,7 +1026,7 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR false // DELTA does not invert
+#define INVERT_X_DIR false
 #define INVERT_Y_DIR false
 #define INVERT_Z_DIR false
 
@@ -1058,6 +1068,9 @@
 #define X_MAX_POS DELTA_PRINTABLE_RADIUS
 #define Y_MAX_POS DELTA_PRINTABLE_RADIUS
 #define Z_MAX_POS MANUAL_Z_HOME_POS
+
+// Z raise distance for tool-change, as needed for some extruders
+#define TOOLCHANGE_ZRAISE     2  // (mm)
 
 /**
  * Software Endstops
@@ -1103,6 +1116,18 @@
   #define FIL_RUNOUT_PULLUP          // Use internal pullup for filament runout pins.
   //#define FIL_RUNOUT_PULLDOWN      // Use internal pulldown for filament runout pins.
   #define FILAMENT_RUNOUT_SCRIPT "M600"
+
+  // After a runout is detected, continue printing this length of filament
+  // before executing the runout script. Useful for a sensor at the end of
+  // a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.
+  //#define FILAMENT_RUNOUT_DISTANCE_MM 25
+
+  #ifdef FILAMENT_RUNOUT_DISTANCE_MM
+    // Enable this option to use an encoder disc that toggles the runout pin
+    // as the filament moves. (Be sure to set FILAMENT_RUNOUT_DISTANCE_MM
+    // large enough to avoid false positives.)
+    //#define FILAMENT_MOTION_SENSOR
+  #endif
 #endif
 
 //===========================================================================
@@ -1592,6 +1617,13 @@
 #define DISPLAY_CHARSET_HD44780 JAPANESE
 
 /**
+ * Info Screen Style (0:Classic, 1:Prusa)
+ *
+ * :[0:'Classic', 1:'Prusa']
+ */
+#define LCD_INFO_SCREEN_STYLE 0
+
+/**
  * SD CARD
  *
  * SD Card support is disabled by default. If your controller has an SD slot,
@@ -1954,6 +1986,15 @@
 // http://github.com/android444/Silvergate
 //
 //#define SILVER_GATE_GLCD_CONTROLLER
+
+//
+// Extensible UI
+//
+// Enable third-party or vendor customized user interfaces that aren't
+// packaged with Marlin. Source code for the user interface will need to
+// be placed in "src/lcd/extensible_ui/lib"
+//
+//#define EXTENSIBLE_UI
 
 //=============================================================================
 //============================  Other Controllers  ============================
