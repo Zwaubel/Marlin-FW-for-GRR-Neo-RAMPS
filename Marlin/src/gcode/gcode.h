@@ -488,7 +488,7 @@ private:
     static void M49();
   #endif
 
-  #if ENABLED(ULTRA_LCD) && ENABLED(LCD_SET_PROGRESS_MANUALLY)
+  #if ENABLED(LCD_SET_PROGRESS_MANUALLY)
     static void M73();
   #endif
 
@@ -672,7 +672,9 @@ private:
     static void M351();
   #endif
 
-  static void M355();
+  #if HAS_CASE_LIGHT
+    static void M355();
+  #endif
 
   #if ENABLED(MORGAN_SCARA)
     static bool M360();
@@ -792,9 +794,7 @@ private:
   #endif
 
   #if HAS_TRINAMIC
-    #if ENABLED(TMC_DEBUG)
-      static void M122();
-    #endif
+    static void M122();
     static void M906();
     #if ENABLED(MONITOR_DRIVER_STATUS)
       static void M911();
@@ -805,9 +805,6 @@ private:
     #endif
     #if USE_SENSORLESS
       static void M914();
-    #endif
-    #if ENABLED(TMC_Z_CALIBRATION)
-      static void M915();
     #endif
   #endif
 

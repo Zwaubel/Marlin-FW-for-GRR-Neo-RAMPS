@@ -76,6 +76,9 @@
 
 #if HAS_SERVOS
   #include "servo.h"
+#endif
+
+#if HAS_SERVOS && HAS_SERVO_ANGLES
   #define EEPROM_NUM_SERVOS NUM_SERVOS
 #else
   #define EEPROM_NUM_SERVOS NUM_SERVO_PLUGS
@@ -485,7 +488,7 @@ void MarlinSettings::postprocess() {
           EEPROM_WRITE(dummy);
         #endif
       #else
-        const float planner_max_jerk[XYZE] = { float(DEFAULT_XJERK), float(DEFAULT_YJERK), float(DEFAULT_ZJERK), float(DEFAULT_EJERK) };
+        const float planner_max_jerk[XYZE] = { float(DEFAULT_EJERK) };
         EEPROM_WRITE(planner_max_jerk);
       #endif
 
@@ -634,8 +637,8 @@ void MarlinSettings::postprocess() {
     {
       _FIELD_TEST(servo_angles);
 
-      #if !HAS_SERVOS
-        uint16_t servo_angles[NUM_SERVO_PLUGS][2] = { { 0, 0 } };
+      #if !HAS_SERVO_ANGLES
+        uint16_t servo_angles[EEPROM_NUM_SERVOS][2] = { { 0, 0 } };
       #endif
       EEPROM_WRITE(servo_angles);
     }
@@ -693,7 +696,7 @@ void MarlinSettings::postprocess() {
     // LCD Preheat settings
     //
     {
-      _FIELD_TEST(lcd_preheat_hotend_temp);
+      _FIELD_TEST(ui_preheat_hotend_temp);
 
       #if HAS_LCD_MENU
         const int16_t (&ui_preheat_hotend_temp)[2]  = ui.preheat_hotend_temp,
@@ -2350,7 +2353,7 @@ void MarlinSettings::reset(PORTARG_SOLO) {
       CONFIG_ECHO_START();
       for (uint8_t i = 0; i < E_STEPPERS; i++) {
         SERIAL_ECHOPAIR_P(port, "  M203 T", (int)i);
-        SERIAL_ECHOLNPAIR_P(port, " E", VOLUMETRIC_UNIT(planner.settings.max_feedrate_mm_s[E_AXIS + i]));
+        SERIAL_ECHOLNPAIR_P(port, " E", VOLUMETRIC_UNIT(planner.settings.max_feedrate_mm_s[E_AXIS_N(i)]));
       }
     #endif
 
@@ -2367,7 +2370,7 @@ void MarlinSettings::reset(PORTARG_SOLO) {
       CONFIG_ECHO_START();
       for (uint8_t i = 0; i < E_STEPPERS; i++) {
         SERIAL_ECHOPAIR_P(port, "  M201 T", (int)i);
-        SERIAL_ECHOLNPAIR_P(port, " E", VOLUMETRIC_UNIT(planner.settings.max_acceleration_mm_per_s2[E_AXIS + i]));
+        SERIAL_ECHOLNPAIR_P(port, " E", VOLUMETRIC_UNIT(planner.settings.max_acceleration_mm_per_s2[E_AXIS_N(i)]));
       }
     #endif
 
