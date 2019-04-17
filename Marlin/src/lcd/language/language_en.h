@@ -247,6 +247,9 @@
 #ifndef MSG_IDEX_MENU
   #define MSG_IDEX_MENU                       _UxGT("IDEX Mode")
 #endif
+#ifndef MSG_OFFSETS_MENU
+  #define MSG_OFFSETS_MENU                    _UxGT("Tool Offsets")
+#endif
 #ifndef MSG_IDEX_MODE_AUTOPARK
   #define MSG_IDEX_MODE_AUTOPARK              _UxGT("Auto-Park")
 #endif
@@ -259,17 +262,14 @@
 #ifndef MSG_IDEX_MODE_FULL_CTRL
   #define MSG_IDEX_MODE_FULL_CTRL             _UxGT("Full control")
 #endif
-#ifndef MSG_IDEX_X_OFFSET
-  #define MSG_IDEX_X_OFFSET                   _UxGT("2nd nozzle X")
+#ifndef MSG_X_OFFSET
+  #define MSG_X_OFFSET                        _UxGT("2nd nozzle X")
 #endif
-#ifndef MSG_IDEX_Y_OFFSET
-  #define MSG_IDEX_Y_OFFSET                   _UxGT("2nd nozzle Y")
+#ifndef MSG_Y_OFFSET
+  #define MSG_Y_OFFSET                        _UxGT("2nd nozzle Y")
 #endif
-#ifndef MSG_IDEX_Z_OFFSET
-  #define MSG_IDEX_Z_OFFSET                   _UxGT("2nd nozzle Z")
-#endif
-#ifndef MSG_IDEX_SAVE_OFFSETS
-  #define MSG_IDEX_SAVE_OFFSETS               _UxGT("Save Offsets")
+#ifndef MSG_Z_OFFSET
+  #define MSG_Z_OFFSET                        _UxGT("2nd nozzle Z")
 #endif
 #ifndef MSG_UBL_MANUAL_MESH
   #define MSG_UBL_MANUAL_MESH                 _UxGT("Manually Build Mesh")
@@ -1361,6 +1361,9 @@
 #else // LCD_HEIGHT < 4
   #ifndef MSG_ADVANCED_PAUSE_WAITING_1
     #define MSG_ADVANCED_PAUSE_WAITING_1      _UxGT("Click to continue")
+  #endif
+  #ifndef MSG_PAUSE_PRINT_INIT_1
+    #define MSG_PAUSE_PRINT_INIT_1            _UxGT("Parking...")
   #endif
   #ifndef MSG_FILAMENT_CHANGE_INIT_1
     #define MSG_FILAMENT_CHANGE_INIT_1        _UxGT("Please wait...")
