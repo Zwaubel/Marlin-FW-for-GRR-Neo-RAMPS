@@ -161,7 +161,7 @@
 // Temperature Sensors
 //
 #ifndef TEMP_0_PIN
-  #define TEMP_0_PIN                          13  // Analog Input
+  #define TEMP_0_PIN                          15  // Analog Input
 #endif
 #ifndef TEMP_1_PIN
   #define TEMP_1_PIN                          15  // Analog Input
@@ -510,6 +510,10 @@
       //#define SHIFT_EN                      17
     #endif
 
+  #endif
+
+  #if ENABLED(REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER)
+    #define BTN_ENC_EN               LCD_PINS_D7  // Detect the presence of the encoder
   #endif
 
   //

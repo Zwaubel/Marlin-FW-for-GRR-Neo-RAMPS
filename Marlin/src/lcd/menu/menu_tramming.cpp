@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -42,14 +42,18 @@
 float z_measured[G35_PROBE_COUNT] = { 0 };
 static uint8_t tram_index = 0;
 
-bool probe_single_point() {
-  const float z_probed_height = probe.probe_at_point(screws_tilt_adjust_pos[tram_index], PROBE_PT_RAISE, 0, true);
+static bool probe_single_point() {
+  do_blocking_move_to_z(TERN(BLTOUCH, Z_CLEARANCE_DEPLOY_PROBE, Z_CLEARANCE_BETWEEN_PROBES));
+  // Stow after each point with BLTouch "HIGH SPEED" mode for push-pin safety
+  const float z_probed_height = probe.probe_at_point(screws_tilt_adjust_pos[tram_index], TERN(BLTOUCH_HS_MODE, PROBE_PT_STOW, PROBE_PT_RAISE), 0, true);
   DEBUG_ECHOLNPAIR("probe_single_point: ", z_probed_height, "mm");
   z_measured[tram_index] = z_probed_height;
+  move_to_tramming_wait_pos();
+
   return !isnan(z_probed_height);
 }
 
-void _menu_single_probe(const uint8_t point) {
+static void _menu_single_probe(const uint8_t point) {
   tram_index = point;
   DEBUG_ECHOLNPAIR("Screen: single probe screen Arg:", point);
   START_MENU();
@@ -60,7 +64,7 @@ void _menu_single_probe(const uint8_t point) {
   END_MENU();
 }
 
-void tramming_wizard_menu() {
+static void tramming_wizard_menu() {
   DEBUG_ECHOLNPAIR("Screen: tramming_wizard_menu");
   START_MENU();
   STATIC_ITEM(MSG_SELECT_ORIGIN);
@@ -69,7 +73,10 @@ void tramming_wizard_menu() {
   LOOP_L_N(i, G35_PROBE_COUNT)
     SUBMENU_N_P(i, (char*)pgm_read_ptr(&tramming_point_name[i]), []{ _menu_single_probe(MenuItemBase::itemIndex); });
 
-  ACTION_ITEM(MSG_BUTTON_DONE, []{ ui.goto_previous_screen_no_defer(); });
+  ACTION_ITEM(MSG_BUTTON_DONE, []{
+    probe.stow(); // Stow before exiting Tramming Wizard
+    ui.goto_previous_screen_no_defer();
+  });
   END_MENU();
 }
 
@@ -78,7 +85,6 @@ void goto_tramming_wizard() {
   DEBUG_ECHOLNPAIR("Screen: goto_tramming_wizard", 1);
   tram_index = 0;
   ui.defer_status_screen();
-  //probe_single_point(); // Probe first point to get differences
 
   // Inject G28, wait for homing to complete,
   set_all_unhomed();
