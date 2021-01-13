@@ -52,6 +52,7 @@ typedef enum {
 } EspUploadResult;
 
 typedef struct {
+  //FIL  uploadFile;
   uint32_t fileSize;
 
   uint32_t uploadAddress;
