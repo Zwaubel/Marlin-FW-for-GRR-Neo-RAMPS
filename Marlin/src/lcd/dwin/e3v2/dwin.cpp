@@ -1711,7 +1711,7 @@ inline void Draw_SDItem(const uint16_t item, int16_t row=-1) {
   inline void Draw_SDItem_Shifted(int8_t &shift) {
     // Limit to the number of chars past the cutoff
     const size_t len = strlen(shift_name);
-    NOMORE(shift, _MAX(len - MENU_CHAR_LIMIT, 0U));
+    NOMORE(shift, (int16_t) _MAX(len - MENU_CHAR_LIMIT, 0U));
 
     // Shorten to the available space
     const size_t lastchar = _MIN((signed)len, shift + MENU_CHAR_LIMIT);
