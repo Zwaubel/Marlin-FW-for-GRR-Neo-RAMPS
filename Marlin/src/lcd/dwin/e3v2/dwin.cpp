@@ -1860,7 +1860,12 @@ void Draw_Status_Area(const bool with_update) {
     DWIN_ICON_Show(ICON, ICON_Zoffset, 158, 428);
     dwin_zoffset = BABY_Z_VAR;
     DWIN_Draw_Signed_Float(DWIN_FONT_STAT, Color_Bg_Black, 2, 2, 178, 429, dwin_zoffset * 100);
-  #endif
+  #endif  
+
+  // Initial axis position
+  show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 37, 444, current_position[X_AXIS] * MINUNITMULT);  //x
+  show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 134, 444, current_position[Y_AXIS] * MINUNITMULT); //y
+  show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 220, 444, current_position[Z_AXIS] * MINUNITMULT); //z
 
   if (with_update) {
     DWIN_UpdateLCD();
