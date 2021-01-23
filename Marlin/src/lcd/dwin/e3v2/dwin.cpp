@@ -1529,6 +1529,20 @@ void HMI_StepXYZE() {
   }
 }
 
+void show_plus_or_minus(uint8_t size, uint16_t bColor, uint8_t iNum, uint8_t fNum, uint16_t x, uint16_t y, long value)
+{
+  if (value < 0)
+  {
+    DWIN_Draw_String(false, true, size, Color_White, bColor, x - 6, y, (char *)F("-"));
+    DWIN_Draw_FloatValue(true, true, 0, size, Color_White, bColor, iNum, fNum, x, y, -value);
+  }
+  else
+  {
+    DWIN_Draw_String(false, true, size, Color_White, bColor, x - 6, y, (char *)F(" "));
+    DWIN_Draw_FloatValue(true, true, 0, size, Color_White, bColor, iNum, fNum, x, y, value);
+  }
+}
+
 void update_variable() {
   #if HAS_HOTEND
     static float last_temp_hotend_target = 0, last_temp_hotend_current = 0;
@@ -1604,6 +1618,7 @@ void update_variable() {
   }
 
 // Bottom Axis update
+  static float last_X_scale, last_Y_scale, last_Z_scale;
   if (last_X_scale != current_position[X_AXIS]) {
     show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 37, 444, current_position[X_AXIS] * MINUNITMULT);
     last_X_scale = current_position[X_AXIS];
