@@ -1529,7 +1529,7 @@ void HMI_StepXYZE() {
   }
 }
 
-void show_plus_or_minus(uint8_t size, uint16_t bColor, uint8_t iNum, uint8_t fNum, uint16_t x, uint16_t y, long value)
+void show_axis_position(uint8_t size, uint16_t bColor, uint8_t iNum, uint8_t fNum, uint16_t x, uint16_t y, long value)
 {
   if (value < 0)
   {
@@ -1620,15 +1620,15 @@ void update_variable() {
 // Bottom Axis update
   static float last_X_scale, last_Y_scale, last_Z_scale;
   if (last_X_scale != current_position[X_AXIS]) {
-    show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 37, 444, current_position[X_AXIS] * MINUNITMULT);
+    show_axis_position(font8x16, Color_Bg_Black, 3, 1, 37, 455, current_position[X_AXIS] * MINUNITMULT);
     last_X_scale = current_position[X_AXIS];
   }
   if (last_Y_scale != current_position[Y_AXIS]) {
-    show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 134, 444, current_position[Y_AXIS] * MINUNITMULT);
+    show_axis_position(font8x16, Color_Bg_Black, 3, 1, 134, 455, current_position[Y_AXIS] * MINUNITMULT);
     last_Y_scale = current_position[Y_AXIS];
   }
   if (last_Z_scale != current_position[Z_AXIS]) {
-    show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 220, 444, current_position[Z_AXIS] * MINUNITMULT);
+    show_axis_position(font8x16, Color_Bg_Black, 3, 1, 220, 455, current_position[Z_AXIS] * MINUNITMULT);
     last_Z_scale = current_position[Z_AXIS];
   }
 
@@ -1863,9 +1863,12 @@ void Draw_Status_Area(const bool with_update) {
   #endif  
 
   // Initial axis position
-  show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 37, 444, current_position[X_AXIS] * MINUNITMULT);  //x
-  show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 134, 444, current_position[Y_AXIS] * MINUNITMULT); //y
-  show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 220, 444, current_position[Z_AXIS] * MINUNITMULT); //z
+  DWIN_ICON_Show(ICON, ICON_MoveX, 13, 452);
+  DWIN_ICON_Show(ICON, ICON_MoveY, 110, 452);
+  DWIN_ICON_Show(ICON, ICON_MoveZ, 196, 452);
+  show_axis_position(font8x16, Color_Bg_Black, 3, 1, 37, 455, current_position[X_AXIS] * MINUNITMULT);
+  show_axis_position(font8x16, Color_Bg_Black, 3, 1, 134, 455, current_position[Y_AXIS] * MINUNITMULT);
+  show_axis_position(font8x16, Color_Bg_Black, 3, 1, 220, 455, current_position[Z_AXIS] * MINUNITMULT);
 
   if (with_update) {
     DWIN_UpdateLCD();
