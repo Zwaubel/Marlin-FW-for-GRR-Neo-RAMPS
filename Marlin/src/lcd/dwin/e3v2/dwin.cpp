@@ -173,6 +173,7 @@ select_t select_page{0}, select_file{0}, select_print{0}, select_prepare{0}
          , select_acc{0}
          , select_jerk{0}
          , select_step{0}
+         , select_bltm{0}
          ;
 
 uint8_t index_file     = MROWS,
@@ -525,12 +526,13 @@ inline bool Apply_Encoder(const ENCODER_DiffState &encoder_diffState, auto &valr
 #define PREPARE_CASE_LANG (PREPARE_CASE_COOL + 1)
 #define PREPARE_CASE_TOTAL PREPARE_CASE_LANG
 
-#define CONTROL_CASE_TEMP 1
+#define CONTROL_CASE_TEMP  1
 #define CONTROL_CASE_MOVE  (CONTROL_CASE_TEMP + 1)
 #define CONTROL_CASE_SAVE  (CONTROL_CASE_MOVE + ENABLED(EEPROM_SETTINGS))
 #define CONTROL_CASE_LOAD  (CONTROL_CASE_SAVE + ENABLED(EEPROM_SETTINGS))
 #define CONTROL_CASE_RESET (CONTROL_CASE_LOAD + ENABLED(EEPROM_SETTINGS))
-#define CONTROL_CASE_INFO  (CONTROL_CASE_RESET + 1)
+#define CONTROL_CASE_BLT   (CONTROL_CASE_RESET + ENABLED(BLTOUCH))
+#define CONTROL_CASE_INFO  (CONTROL_CASE_BLT + 1)
 #define CONTROL_CASE_TOTAL CONTROL_CASE_INFO
 
 #define TUNE_CASE_SPEED 1
@@ -695,6 +697,26 @@ inline void Draw_Prepare_Menu() {
   if (select_prepare.now) Draw_Menu_Cursor(PSCROL(select_prepare.now));
 }
 
+//bltouch menu
+inline void draw_BLTouch_Menu()
+{
+  Clear_Main_Window();
+
+  Draw_Title("BLTouch Menu"); // TODO: GET_TEXT_F
+
+  DWIN_Draw_String(false, false, font8x16, White, Background_black, LBLX, MBASE(1), (char *)F("Alarm Release"));
+  DWIN_Draw_String(false, false, font8x16, White, Background_black, LBLX, MBASE(2), (char *)F("Self Test"));
+  DWIN_Draw_String(false, false, font8x16, White, Background_black, LBLX, MBASE(3), (char *)F("Pin DOWN"));
+  DWIN_Draw_String(false, false, font8x16, White, Background_black, LBLX, MBASE(4), (char *)F("Pin UP"));
+
+  Draw_Back_First(select_bltm.now == 0);
+  if (select_bltm.now)
+    Draw_Menu_Cursor(select_bltm.now);
+
+  LOOP_L_N(i, MROWS - 1)
+  Draw_Menu_Line(i + 1, ICON_SetEndTemp);
+}
+
 inline void Draw_Control_Menu() {
   Clear_Main_Window();
 
@@ -734,6 +756,9 @@ inline void Draw_Control_Menu() {
         DWIN_Draw_String(false, true, font8x16, Color_White, Color_Bg_Black, LBLX, CLINE(CONTROL_CASE_LOAD), GET_TEXT_F(MSG_LOAD_EEPROM));
         DWIN_Draw_String(false, true, font8x16, Color_White, Color_Bg_Black, LBLX, CLINE(CONTROL_CASE_RESET), GET_TEXT_F(MSG_RESTORE_DEFAULTS));
       #endif
+      #ifdef BLTOUCH
+      if (CVISI(CONTROL_CASE_INFO)) DWIN_Draw_String(false, true, font8x16, Color_White, Color_Bg_Black, LBLX, CLINE(CONTROL_CASE_INFO), F("BLTouch"));
+      #endif
       if (CVISI(CONTROL_CASE_INFO)) DWIN_Draw_String(false, true, font8x16, Color_White, Color_Bg_Black, LBLX, CLINE(CONTROL_CASE_INFO), F("Info"));
     #else
       DWIN_Frame_TitleCopy(1, 128, 2, 176, 12);                                           // "Control"
@@ -767,6 +792,11 @@ inline void Draw_Control_Menu() {
     _TEMP_ICON(CONTROL_CASE_SAVE);
     _TEMP_ICON(CONTROL_CASE_LOAD);
     _TEMP_ICON(CONTROL_CASE_RESET);
+  #endif
+
+  #ifdef BLTOUCH
+  _TEMP_ICON(CONTROL_CASE_BLT);
+  if (CVISI(CONTROL_CASE_INFO)) Draw_More_Icon(CSCROL(i));
   #endif
 
   _TEMP_ICON(CONTROL_CASE_INFO);
@@ -2519,11 +2549,14 @@ void HMI_Control() {
         Draw_More_Icon(CONTROL_CASE_TEMP + MROWS - index_control); // Temperature >
         Draw_More_Icon(CONTROL_CASE_MOVE + MROWS - index_control); // Motion >
         if (index_control > MROWS) {
-          Draw_More_Icon(CONTROL_CASE_INFO + MROWS - index_control); // Info >
+          Draw_More_Icon(CONTROL_CASE_BLT + MROWS - index_control); // BLTouch>
+          Draw_More_Icon(CONTROL_CASE_INFO + MROWS - index_control); // Info>
           if (HMI_IsChinese())
             DWIN_Frame_AreaCopy(1, 231, 104, 258, 116, LBLX, MBASE(CONTROL_CASE_INFO - 1));
-          else
+          else {            
+            DWIN_Frame_AreaCopy(1, 0, 104, 24, 114, LBLX, MBASE(CONTROL_CASE_BLT - 1));
             DWIN_Frame_AreaCopy(1, 0, 104, 24, 114, LBLX, MBASE(CONTROL_CASE_INFO - 1));
+          }
         }
       }
       else {
@@ -2578,6 +2611,12 @@ void HMI_Control() {
           settings.reset();
           HMI_AudioFeedback();
           break;
+      #endif
+      #ifdef BLTOUCH
+      case CONTROL_CASE_BLT: // Info
+        checkkey = Info;
+        draw_BLTouch_Menu();
+        break;
       #endif
       case CONTROL_CASE_INFO: // Info
         checkkey = Info;

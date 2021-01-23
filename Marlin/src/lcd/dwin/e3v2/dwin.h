@@ -49,6 +49,9 @@ enum processID : uint8_t {
   AxisMove,
   TemperatureID,
   Motion,
+  #ifdef BLTOUCH
+    BLTouch,
+  #endif
   Info,
   Tune,
   #if HAS_PREHEAT
