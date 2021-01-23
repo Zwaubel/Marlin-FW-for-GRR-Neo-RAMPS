@@ -1602,6 +1602,21 @@ void update_variable() {
     DWIN_Draw_IntValue(true, true, 0, DWIN_FONT_STAT, Color_White, Color_Bg_Black, 3, 33 + 2 * STAT_CHR_W, 429, feedrate_percentage);
     last_speed = feedrate_percentage;
   }
+
+// Bottom Axis update
+  if (last_X_scale != current_position[X_AXIS]) {
+    show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 37, 444, current_position[X_AXIS] * MINUNITMULT);
+    last_X_scale = current_position[X_AXIS];
+  }
+  if (last_Y_scale != current_position[Y_AXIS]) {
+    show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 134, 444, current_position[Y_AXIS] * MINUNITMULT);
+    last_Y_scale = current_position[Y_AXIS];
+  }
+  if (last_Z_scale != current_position[Z_AXIS]) {
+    show_plus_or_minus(font8x16, Color_Bg_Black, 3, 1, 220, 444, current_position[Z_AXIS] * MINUNITMULT);
+    last_Z_scale = current_position[Z_AXIS];
+  }
+
   #if HAS_ZOFFSET_ITEM
     if (last_zoffset != BABY_Z_VAR) {
       DWIN_Draw_Signed_Float(DWIN_FONT_STAT, Color_Bg_Black, 2, 2, 178 + STAT_CHR_W, 429, BABY_Z_VAR * 100);
