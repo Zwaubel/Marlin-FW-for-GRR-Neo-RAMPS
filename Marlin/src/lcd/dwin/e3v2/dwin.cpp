@@ -704,10 +704,10 @@ inline void draw_BLTouch_Menu()
 
   Draw_Title("BLTouch Menu"); // TODO: GET_TEXT_F
 
-  DWIN_Draw_String(false, false, font8x16, White, Background_black, LBLX, MBASE(1), (char *)F("Alarm Release"));
-  DWIN_Draw_String(false, false, font8x16, White, Background_black, LBLX, MBASE(2), (char *)F("Self Test"));
-  DWIN_Draw_String(false, false, font8x16, White, Background_black, LBLX, MBASE(3), (char *)F("Pin DOWN"));
-  DWIN_Draw_String(false, false, font8x16, White, Background_black, LBLX, MBASE(4), (char *)F("Pin UP"));
+  DWIN_Draw_String(false, false, font8x16, Color_White, Color_Bg_Black, LBLX, MBASE(1), (char*)F("Alarm Release"));
+  DWIN_Draw_String(false, false, font8x16, Color_White, Color_Bg_Black, LBLX, MBASE(2), (char*)F("Self Test"));
+  DWIN_Draw_String(false, false, font8x16, Color_White, Color_Bg_Black, LBLX, MBASE(3), (char*)F("Pin DOWN"));
+  DWIN_Draw_String(false, false, font8x16, Color_White, Color_Bg_Black, LBLX, MBASE(4), (char*)F("Pin UP"));
 
   Draw_Back_First(select_bltm.now == 0);
   if (select_bltm.now)
@@ -2534,6 +2534,51 @@ void Draw_Temperature_Menu() {
   #endif
 }
 
+//bltouch menu
+void HMI_BlTouch(void)
+{
+  ENCODER_DiffState encoder_diffState = get_encoder_state();
+  if (encoder_diffState == ENCODER_DIFF_NO)
+    return;
+
+  // Avoid flicker by updating only the previous menu
+  if (encoder_diffState == ENCODER_DIFF_CW)
+  {
+    if (select_bltm.inc(4))
+      Move_Highlight(1, select_bltm.now);
+  }
+  else if (encoder_diffState == ENCODER_DIFF_CCW)
+  {
+    if (select_bltm.dec())
+      Move_Highlight(-1, select_bltm.now);
+  }
+  else if (encoder_diffState == ENCODER_DIFF_ENTER)
+  {
+    switch (select_bltm.now)
+    {
+    case 0: // back
+      checkkey = Control;
+      select_control.set(6);
+      Draw_Control_Menu();
+      break;
+      break;
+    case 1: // bltouch alarm release
+      queue.inject_P(PSTR("M280 P0 S160"));
+      break;
+    case 2: // bltouch self test
+      queue.inject_P(PSTR("M280 P0 S120\nG4 P1000\nM280 P0 S160"));
+      break;
+    case 3: // pin down
+      queue.inject_P(PSTR("M280 P0 S10"));
+      break;
+    case 4: // pin up
+      queue.inject_P(PSTR("M280 P0 S90"));
+      break;
+    }
+  }
+  DWIN_UpdateLCD();
+}
+
 /* Control */
 void HMI_Control() {
   ENCODER_DiffState encoder_diffState = get_encoder_state();
@@ -3703,6 +3748,9 @@ void DWIN_HandleScreen() {
     case SelectFile:      HMI_SelectFile(); break;
     case Prepare:         HMI_Prepare(); break;
     case Control:         HMI_Control(); break;
+    #ifdef BLTOUCH
+      case BLTouchM:       HMI_BlTouch(); break;
+    #endif
     case Leveling:        break;
     case PrintProcess:    HMI_Printing(); break;
     case Print_window:    HMI_PauseOrStop(); break;

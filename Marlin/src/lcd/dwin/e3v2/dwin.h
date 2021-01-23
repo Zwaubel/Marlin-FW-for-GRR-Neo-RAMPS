@@ -50,7 +50,7 @@ enum processID : uint8_t {
   TemperatureID,
   Motion,
   #ifdef BLTOUCH
-    BLTouch,
+    BLTouchM,
   #endif
   Info,
   Tune,
