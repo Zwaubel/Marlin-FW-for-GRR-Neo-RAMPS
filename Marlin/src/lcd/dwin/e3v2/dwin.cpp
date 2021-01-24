@@ -698,7 +698,7 @@ inline void Draw_Prepare_Menu() {
 }
 
 //bltouch menu
-inline void draw_BLTouch_Menu()
+inline void Draw_BLTouch_Menu()
 {
   Clear_Main_Window();
 
@@ -757,7 +757,7 @@ inline void Draw_Control_Menu() {
         DWIN_Draw_String(false, true, font8x16, Color_White, Color_Bg_Black, LBLX, CLINE(CONTROL_CASE_RESET), GET_TEXT_F(MSG_RESTORE_DEFAULTS));
       #endif
       #ifdef BLTOUCH
-      if (CVISI(CONTROL_CASE_INFO)) DWIN_Draw_String(false, true, font8x16, Color_White, Color_Bg_Black, LBLX, CLINE(CONTROL_CASE_INFO), F("BLTouch"));
+        if (CVISI(CONTROL_CASE_INFO)) DWIN_Draw_String(false, true, font8x16, Color_White, Color_Bg_Black, LBLX, CLINE(CONTROL_CASE_BLT), F("BLTouch"));
       #endif
       if (CVISI(CONTROL_CASE_INFO)) DWIN_Draw_String(false, true, font8x16, Color_White, Color_Bg_Black, LBLX, CLINE(CONTROL_CASE_INFO), F("Info"));
     #else
@@ -795,8 +795,8 @@ inline void Draw_Control_Menu() {
   #endif
 
   #ifdef BLTOUCH
-  _TEMP_ICON(CONTROL_CASE_BLT);
-  if (CVISI(CONTROL_CASE_INFO)) Draw_More_Icon(CSCROL(i));
+    _TEMP_ICON(CONTROL_CASE_BLT);
+    if (CVISI(CONTROL_CASE_BLT)) Draw_More_Icon(CSCROL(i));
   #endif
 
   _TEMP_ICON(CONTROL_CASE_INFO);
@@ -2535,32 +2535,25 @@ void Draw_Temperature_Menu() {
 }
 
 //bltouch menu
-void HMI_BlTouch(void)
-{
+void HMI_BLTouch(void) {
   ENCODER_DiffState encoder_diffState = get_encoder_state();
-  if (encoder_diffState == ENCODER_DIFF_NO)
-    return;
+  if (encoder_diffState == ENCODER_DIFF_NO) return;
 
   // Avoid flicker by updating only the previous menu
-  if (encoder_diffState == ENCODER_DIFF_CW)
-  {
-    if (select_bltm.inc(4))
+  if (encoder_diffState == ENCODER_DIFF_CW) {
+    if (select_bltm.inc(5))
       Move_Highlight(1, select_bltm.now);
   }
-  else if (encoder_diffState == ENCODER_DIFF_CCW)
-  {
+  else if (encoder_diffState == ENCODER_DIFF_CCW) {
     if (select_bltm.dec())
       Move_Highlight(-1, select_bltm.now);
   }
-  else if (encoder_diffState == ENCODER_DIFF_ENTER)
-  {
-    switch (select_bltm.now)
-    {
+  else if (encoder_diffState == ENCODER_DIFF_ENTER) {
+    switch (select_bltm.now) {
     case 0: // back
       checkkey = Control;
       select_control.set(6);
       Draw_Control_Menu();
-      break;
       break;
     case 1: // bltouch alarm release
       queue.inject_P(PSTR("M280 P0 S160"));
@@ -2594,12 +2587,14 @@ void HMI_Control() {
         Draw_More_Icon(CONTROL_CASE_TEMP + MROWS - index_control); // Temperature >
         Draw_More_Icon(CONTROL_CASE_MOVE + MROWS - index_control); // Motion >
         if (index_control > MROWS) {
-          Draw_More_Icon(CONTROL_CASE_BLT + MROWS - index_control); // BLTouch>
-          Draw_More_Icon(CONTROL_CASE_INFO + MROWS - index_control); // Info>
-          if (HMI_IsChinese())
+          #ifdef BLTOUCH    
+            Draw_More_Icon(CONTROL_CASE_BLT + MROWS - index_control); // BLTouch >
+          #endif
+          Draw_More_Icon(CONTROL_CASE_INFO + MROWS - index_control); // Info >
+          if (HMI_IsChinese()) {
             DWIN_Frame_AreaCopy(1, 231, 104, 258, 116, LBLX, MBASE(CONTROL_CASE_INFO - 1));
-          else {            
-            DWIN_Frame_AreaCopy(1, 0, 104, 24, 114, LBLX, MBASE(CONTROL_CASE_BLT - 1));
+          }
+          else {
             DWIN_Frame_AreaCopy(1, 0, 104, 24, 114, LBLX, MBASE(CONTROL_CASE_INFO - 1));
           }
         }
@@ -2658,10 +2653,10 @@ void HMI_Control() {
           break;
       #endif
       #ifdef BLTOUCH
-      case CONTROL_CASE_BLT: // Info
-        checkkey = Info;
-        draw_BLTouch_Menu();
-        break;
+        case CONTROL_CASE_BLT: // BLTouch
+          checkkey = BLTouchM;
+          Draw_BLTouch_Menu();
+          break;
       #endif
       case CONTROL_CASE_INFO: // Info
         checkkey = Info;
@@ -3749,7 +3744,7 @@ void DWIN_HandleScreen() {
     case Prepare:         HMI_Prepare(); break;
     case Control:         HMI_Control(); break;
     #ifdef BLTOUCH
-      case BLTouchM:       HMI_BlTouch(); break;
+      case BLTouchM:       HMI_BLTouch(); break;
     #endif
     case Leveling:        break;
     case PrintProcess:    HMI_Printing(); break;
