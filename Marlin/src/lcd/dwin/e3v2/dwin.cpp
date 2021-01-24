@@ -795,7 +795,7 @@ inline void Draw_Control_Menu() {
   #endif
 
   #ifdef BLTOUCH
-    _TEMP_ICON(CONTROL_CASE_BLT);
+    do{ ++i; if (CVISI(i)) Draw_Menu_Line(CSCROL(i), ICON_SetEndTemp); }while(0)
     if (CVISI(CONTROL_CASE_BLT)) Draw_More_Icon(CSCROL(i));
   #endif
 
@@ -2592,9 +2592,15 @@ void HMI_Control() {
           #endif
           Draw_More_Icon(CONTROL_CASE_INFO + MROWS - index_control); // Info >
           if (HMI_IsChinese()) {
+            #ifdef BLTOUCH    
+              DWIN_Frame_AreaCopy(1, 231, 104, 258, 116, LBLX, MBASE(CONTROL_CASE_BLT - 1)); // BLTouch >
+            #endif
             DWIN_Frame_AreaCopy(1, 231, 104, 258, 116, LBLX, MBASE(CONTROL_CASE_INFO - 1));
           }
           else {
+            #ifdef BLTOUCH            
+              DWIN_Frame_AreaCopy(1, 0, 104, 24, 114, LBLX, MBASE(CONTROL_CASE_BLT - 1));
+            #endif
             DWIN_Frame_AreaCopy(1, 0, 104, 24, 114, LBLX, MBASE(CONTROL_CASE_INFO - 1));
           }
         }
