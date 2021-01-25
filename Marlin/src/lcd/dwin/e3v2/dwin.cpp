@@ -2583,27 +2583,47 @@ void HMI_Control() {
   if (encoder_diffState == ENCODER_DIFF_CW) {
     if (select_control.inc(1 + CONTROL_CASE_TOTAL)) {
       if (select_control.now > MROWS && select_control.now > index_control) {
+        // get the current encoder index
         index_control = select_control.now;
-        Scroll_Menu(DWIN_SCROLL_UP);
-        Draw_Menu_Icon(MROWS, ICON_Temperature + index_control - 1);
+
+        // Scroll up and draw the follower menu icon 
+        Scroll_Menu(DWIN_SCROLL_UP);         
         Draw_More_Icon(CONTROL_CASE_TEMP + MROWS - index_control); // Temperature >
         Draw_More_Icon(CONTROL_CASE_MOVE + MROWS - index_control); // Motion >
+        #ifdef BLTOUCH 
+          if (ICON_Temperature + index_control - 1 == ICON_Info)
+            Draw_Menu_Icon(MROWS, ICON_SetEndTemp);
+          else if (ICON_Temperature + index_control - 1 == ICON_SetEndTemp)
+            Draw_Menu_Icon(MROWS, ICON_Info);
+          else
+            Draw_Menu_Icon(MROWS, ICON_Temperature + index_control - 1);
+        #else
+            Draw_Menu_Icon(MROWS, ICON_Temperature + index_control - 1);
+        #endif
+        
+        // get menu items when scrolling over the edge of the menu
         if (index_control > MROWS) {
-          #ifdef BLTOUCH    
+          #ifdef BLTOUCH
+          if (index_control == CONTROL_CASE_BLT)    
             Draw_More_Icon(CONTROL_CASE_BLT + MROWS - index_control); // BLTouch >
           #endif
-          Draw_More_Icon(CONTROL_CASE_INFO + MROWS - index_control); // Info >
+          if (index_control == CONTROL_CASE_INFO)
+            Draw_More_Icon(CONTROL_CASE_INFO + MROWS - index_control); // Info >
           if (HMI_IsChinese()) {
-            #ifdef BLTOUCH    
-              DWIN_Frame_AreaCopy(1, 231, 104, 258, 116, LBLX, MBASE(CONTROL_CASE_BLT - 1)); // BLTouch >
+            #ifdef BLTOUCH 
+              if (index_control == CONTROL_CASE_BLT)       
+                DWIN_Frame_AreaCopy(1, 231, 104, 258, 116, LBLX, MBASE(CONTROL_CASE_BLT - 1)); // BLTouch >
             #endif
-            DWIN_Frame_AreaCopy(1, 231, 104, 258, 116, LBLX, MBASE(CONTROL_CASE_INFO - 1));
+            if (index_control == CONTROL_CASE_INFO)
+              DWIN_Frame_AreaCopy(1, 231, 104, 258, 116, LBLX, MBASE(CONTROL_CASE_INFO - 1));
           }
           else {
-            #ifdef BLTOUCH            
-              DWIN_Frame_AreaCopy(1, 0, 104, 24, 114, LBLX, MBASE(CONTROL_CASE_BLT - 1));
+            #ifdef BLTOUCH  
+              if (index_control == CONTROL_CASE_BLT)             
+                DWIN_Frame_AreaCopy(1, 25, 104, 30, 114, LBLX, MBASE(CONTROL_CASE_BLT - 1));
             #endif
-            DWIN_Frame_AreaCopy(1, 0, 104, 24, 114, LBLX, MBASE(CONTROL_CASE_INFO - 1));
+            if (index_control == CONTROL_CASE_INFO)   
+              DWIN_Frame_AreaCopy(1, 0, 104, 24, 114, LBLX, MBASE(CONTROL_CASE_INFO - 1));
           }
         }
       }
