@@ -796,11 +796,13 @@ inline void Draw_Control_Menu() {
   #endif
 
   #ifdef BLTOUCH
-    do{ ++i; if (CVISI(i)) Draw_Menu_Line(CSCROL(i), ICON_SetEndTemp); }while(0)
+    do{ ++i; if (CVISI(i)) Draw_Menu_Line(CSCROL(i), ICON_SetEndTemp); }while(0);
     if (CVISI(CONTROL_CASE_BLT)) Draw_More_Icon(CSCROL(i));
+    _TEMP_ICON(CONTROL_CASE_INFO - 1);
+  #else
+    _TEMP_ICON(CONTROL_CASE_INFO);
   #endif
 
-  _TEMP_ICON(CONTROL_CASE_INFO);
   if (CVISI(CONTROL_CASE_INFO)) Draw_More_Icon(CSCROL(i));
 }
 
