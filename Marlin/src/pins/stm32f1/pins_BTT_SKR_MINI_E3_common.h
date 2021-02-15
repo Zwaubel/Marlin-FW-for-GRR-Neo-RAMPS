@@ -101,7 +101,7 @@
 #define HEATER_BED_PIN                      PC9   // "HB"
 
 #ifdef SKR_MINI_E3_V2
-  #define FAN_PIN                           PC6
+  #define FAN_PIN                           PC7
 #else
   #define FAN_PIN                           PA8   // "FAN0"
 #endif
@@ -136,7 +136,7 @@
   #define EXP1_3                            PB7
 #endif
 
-#if HAS_WIRED_LCD
+#if HAS_WIRED_LCD || ENABLED(DWIN_CREALITY_LCD)
 
   #if ENABLED(CR10_STOCKDISPLAY)
 
@@ -215,8 +215,32 @@
 
     #endif
 
+    
+/**
+ *        Ender 3 V2 display                         SKR Mini E3 V2.0
+ *                _____                                     _____
+ *            5V | 1 2 | GND                            5V | 1 2 | GND
+ *   (BTN_E1) A  | 3 4 | B (BTN_E2)         (BTN_EN1) PB15 | 3 4 | PB8 (BTN_E2)
+ *          BEEP | 5 6   ENT (BTN_ENC)                PB9  | 5 6   RX1
+ *  (SKR_RX1) TX | 7 8 | RX (SKR_TX1)                RESET | 7 8 | TX1
+ *            NC | 9 10| NC                  (BEEPER) PA15 | 9 10| PB5  (BTN_ENC)
+ *                -----                                     -----
+ *                EXP1                                      EXP1
+ */
+#elif ENABLED(DWIN_CREALITY_LCD)
+
+  // RET6 DWIN ENCODER LCD
+  #define BTN_ENC                           PB5
+  #define BTN_EN1                           PB15
+  #define BTN_EN2                           PB8
+
+  #ifndef BEEPER_PIN
+    #define BEEPER_PIN                      PA15
+    #undef SPEAKER
+  #endif
+
   #else
-    #error "Only CR10_STOCKDISPLAY, ZONESTAR_LCD, ENDER2_STOCKDISPLAY, MKS_MINI_12864, and TFTGLCD_PANEL_(SPI|I2C) are currently supported on the BIGTREE_SKR_MINI_E3."
+    #error "Only CR10_STOCKDISPLAY, ZONESTAR_LCD, ENDER2_STOCKDISPLAY, MKS_MINI_12864, TFTGLCD_PANEL_(SPI|I2C) and DWIN_CREALITY_LCD (Ender 3V2) are currently supported on the BIGTREE_SKR_MINI_E3."
   #endif
 
 #endif // HAS_WIRED_LCD
