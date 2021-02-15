@@ -136,7 +136,7 @@
   #define EXP1_3                            PB7
 #endif
 
-#if HAS_WIRED_LCD || ENABLED(DWIN_CREALITY_LCD)
+#if HAS_WIRED_LCD || ENABLED(DWIN_CREALITY_LCD) || ENABLED(CREALITY_DWIN_EXTUI)
 
   #if ENABLED(CR10_STOCKDISPLAY)
 
@@ -227,7 +227,7 @@
  *                -----                                     -----
  *                EXP1                                      EXP1
  */
-#elif ENABLED(DWIN_CREALITY_LCD)
+#elif ENABLED(DWIN_CREALITY_LCD) || ENABLED(CREALITY_DWIN_EXTUI)
 
   // RET6 DWIN ENCODER LCD
   #define BTN_ENC                           PB5
