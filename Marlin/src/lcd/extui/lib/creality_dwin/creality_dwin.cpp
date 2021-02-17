@@ -80,7 +80,7 @@
 
 #define CORP_WEBSITE_E "www.marlinfw.org"
 
-#define BUILD_NUMBER "bugfix-2.0.x-jyers"
+#define BUILD_NUMBER "1.1-jyers"
 
 #define DWIN_FONT_MENU font8x16
 #define DWIN_FONT_STAT font10x20
