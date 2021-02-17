@@ -78,9 +78,9 @@
 
 #define MACHINE_SIZE STRINGIFY(X_BED_SIZE) "x" STRINGIFY(Y_BED_SIZE) "x" STRINGIFY(Z_MAX_POS)
 
-#define CORP_WEBSITE_E "github.com/Jyers"
+#define CORP_WEBSITE_E "www.marlinfw.org"
 
-#define BUILD_NUMBER "1.1"
+#define BUILD_NUMBER "bugfix-2.0.x-jyers"
 
 #define DWIN_FONT_MENU font8x16
 #define DWIN_FONT_STAT font10x20
