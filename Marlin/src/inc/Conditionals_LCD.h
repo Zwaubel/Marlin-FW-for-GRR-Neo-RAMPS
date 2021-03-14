@@ -654,17 +654,6 @@
   #define UNUSED_E(E) UNUSED(E)
 #endif
 
-#if ANY(DWIN_CREALITY_LCD, CREALITY_DWIN_EXTUI)
-  #define SERIAL_CATCHALL 0
-  #ifndef LCD_SERIAL_PORT
-    #ifdef BOARD_BTT_SKR_MINI_E3_V2_0  
-      #define LCD_SERIAL_PORT 1 // SKR Mini E3 V2
-    #else
-      #define LCD_SERIAL_PORT 3 // Creality 4.x board
-    #endif
-  #endif
-#endif
-
 /**
  * The BLTouch Probe emulates a servo probe
  * and uses "special" angles for its state.
@@ -954,11 +943,34 @@
   #define HAS_CLASSIC_E_JERK 1
 #endif
 
+//
+// Serial Port Info
+//
+#ifdef SERIAL_PORT_2
+  #define NUM_SERIAL 2
+  #define HAS_MULTI_SERIAL 1
+#elif defined(SERIAL_PORT)
+  #define NUM_SERIAL 1
+#else
+  #define NUM_SERIAL 0
+  #undef BAUD_RATE_GCODE
+#endif
 #if SERIAL_PORT == -1 || SERIAL_PORT_2 == -1
   #define HAS_USB_SERIAL 1
 #endif
 #if SERIAL_PORT_2 == -2
   #define HAS_ETHERNET 1
+#endif
+
+#if ANY(DWIN_CREALITY_LCD, CREALITY_DWIN_EXTUI)
+  #define SERIAL_CATCHALL 0
+  #ifndef LCD_SERIAL_PORT
+    #ifdef BOARD_BTT_SKR_MINI_E3_V2_0  
+      #define LCD_SERIAL_PORT 1 // SKR Mini E3 V2
+    #else
+      #define LCD_SERIAL_PORT 3 // Creality 4.x board
+    #endif
+  #endif
 #endif
 
 // Fallback Stepper Driver types that don't depend on Configuration_adv.h
