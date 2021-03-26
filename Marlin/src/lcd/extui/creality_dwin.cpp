@@ -68,7 +68,7 @@ namespace ExtUI {
       // Called when any mesh points are updated
     }
 
-    void onMeshUpdate(const int8_t xpos, const int8_t ypos, const ExtUI::probe_state_t state) {
+    void onMeshUpdate(const int8_t xpos, const int8_t ypos, const probe_state_t state) {
       // Called to indicate a special condition
     }
   #endif
