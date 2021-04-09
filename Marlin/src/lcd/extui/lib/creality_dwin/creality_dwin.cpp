@@ -181,7 +181,7 @@ CrealityDWINClass CrealityDWIN;
   struct UBL_Settings {
     bool viewer_asymmetric_range = false;
     bool viewer_print_value = false;
-    uint8_t tilt_grid = 2;
+    uint8_t tilt_grid = 1;
     bool goto_mesh_value = false;
     bool mesh_step_warning = false;
     bool mesh_goto_zhop = true;
@@ -646,6 +646,7 @@ void CrealityDWINClass::Draw_Print_ProgressElapsed() {
 }
 
 void CrealityDWINClass::Draw_Print_confirm() {
+  Draw_Print_Screen();
   process = Confirm;
   popup = Complete;
   DWIN_Draw_Rectangle(1, Color_Bg_Black, 8, 252, 263, 351);
@@ -833,7 +834,6 @@ void CrealityDWINClass::Draw_Popup(const char *line1, const char *line2,const ch
   else if (mode == Confirm) {
     DWIN_ICON_Show(ICON, ICON_Continue_E, 87, 283);
   }
-  ui.refresh_brightness();
 }
 
 void CrealityDWINClass::Popup_Select() {
@@ -2809,7 +2809,7 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           case UBLSETTINGS_FADE:
               if (draw) {
                 Draw_Menu_Item(row, ICON_Fade, (char*)"Fade Mesh within");
-                Draw_Float(planner.z_fade_height, row, 0, 1);
+                Draw_Float(planner.z_fade_height, row, false, 1);
               }
               else {
                 Modify_Value(planner.z_fade_height, 0, Z_MAX_POS, 1);
@@ -2820,10 +2820,10 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           case UBLSETTINGS_TILT:
               if (draw) {
                 Draw_Menu_Item(row, ICON_Tilt, (char*)"Tilting Grid Size");
-                Draw_Float(ubl_conf.tilt_grid, row, 0, 1);
+                Draw_Float(ubl_conf.tilt_grid, row, false, 1);
               }
               else {
-                Modify_Value(ubl_conf.tilt_grid, 1, 15, 1);
+                Modify_Value(ubl_conf.tilt_grid, 1, 8, 1);
               }
               break;
           case UBLSETTINGS_PLANE:
@@ -4115,9 +4115,6 @@ inline void CrealityDWINClass::Confirm_Control() {
       case Complete:
         Draw_Main_Menu();
         break;
-      case BacklightOff:
-        ui.refresh_brightness();
-        break;
       case UI:
         switch(last_process) {
           case Menu:
@@ -4205,6 +4202,8 @@ void CrealityDWINClass::Start_Print(bool sd) {
       strcpy_P(filename, card.longest_filename());
     else
       strcpy_P(filename, (char*)"Host Print");
+    ui.set_progress(0);
+    ui.set_remaining_time(0);
     Draw_Print_Screen();
   }
 }
@@ -4213,13 +4212,9 @@ void CrealityDWINClass::Stop_Print() {
   printing = false;
   thermalManager.zero_fan_speeds();
   thermalManager.disable_all_heaters();
-  if (process == Print) {
-    Draw_Print_confirm();
-  }
-  else {
-    Draw_Print_Screen();
-    Draw_Print_confirm();
-  }
+  ui.set_progress(100);
+  ui.set_remaining_time(0);
+  Draw_Print_confirm();
 }
 
 void CrealityDWINClass::Update() {
@@ -4412,17 +4407,25 @@ void CrealityDWINClass::AudioFeedback(const bool success/*=true*/) {
 
 void CrealityDWINClass::SDCardInsert() { card.cdroot(); }
 
+void CrealityDWINClass::Save_Settings() {
+  eeprom_settings.tilt_grid_size = ubl_conf.tilt_grid-1;
+}
+
+void CrealityDWINClass::Load_Settings() {
+  ubl_conf.tilt_grid = eeprom_settings.tilt_grid_size+1;
+}
+
+
 uint8_t MarlinUI::brightness = DEFAULT_LCD_BRIGHTNESS;
+bool MarlinUI::backlight = true;
 
 void MarlinUI::set_brightness(const uint8_t value) {
-  if (value == 0 && process != Confirm && process != Popup) {
-    last_process = process;
-    process = Confirm;
-    popup = BacklightOff;
+  if (value == 0) {
+    backlight = false;
     DWIN_Backlight_SetLuminance(0);
   }
   else {
-    if (process == Confirm && popup == BacklightOff) process = last_process;
+    backlight = true;
     brightness = constrain(value, MIN_LCD_BRIGHTNESS, MAX_LCD_BRIGHTNESS);
     DWIN_Backlight_SetLuminance(brightness);
   }
