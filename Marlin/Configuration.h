@@ -2375,7 +2375,7 @@
 //
 // Ender-3 v2 OEM display. A DWIN display with Rotary Encoder.
 //
-#define CREALITY_DWIN_EXTUI
+//#define CREALITY_DWIN
 
 //
 // DGUS Touch Display with DWIN OS. (Choose one.)
