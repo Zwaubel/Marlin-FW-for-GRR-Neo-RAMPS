@@ -36,7 +36,7 @@ enum processID : uint8_t {
 };
 
 enum popupID : uint8_t {
-  Pause, Stop, Resume, SaveLevel, ETemp, ConfLevel, Level, Home, MoveWait, Heating, Complete, FilLoad, FilChange, UI, TempWarn, Runout
+  Pause, Stop, Resume, SaveLevel, ETemp, ConfLevel, Level, Home, MoveWait, Heating, Complete, FilLoad, FilChange, UI, TempWarn, Runout, PIDWait
 };
 
 enum menuID : uint8_t {
@@ -50,18 +50,22 @@ enum menuID : uint8_t {
     Control,
       TempMenu,
         PID,
+          HotendPID,
+          BedPID,
         Preheat1,
         Preheat2,
         Preheat3,
         Preheat4,
         Preheat5,
       Motion,
+        HomeOffsets,
         MaxSpeed,
         MaxAcceleration,
         MaxJerk,
         Steps,
-      Advanced,
+      Visual,
         ColorSettings,
+      Advanced,
       Info,
     ManualMesh,
     UBL,
@@ -313,11 +317,11 @@ public:
 
 
   void Setup_Value(float value, float min, float max, float unit, uint8_t type);
-  void Modify_Value(float &value, float min, float max, float unit);
-  void Modify_Value(uint8_t &value, float min, float max, float unit);
-  void Modify_Value(uint16_t &value, float min, float max, float unit);
-  void Modify_Value(int16_t &value, float min, float max, float unit);
-  void Modify_Value(uint32_t &value, float min, float max, float unit);
+  void Modify_Value(float &value, float min, float max, float unit, void (*f)()=NULL);
+  void Modify_Value(uint8_t &value, float min, float max, float unit, void (*f)()=NULL);
+  void Modify_Value(uint16_t &value, float min, float max, float unit, void (*f)()=NULL);
+  void Modify_Value(int16_t &value, float min, float max, float unit, void (*f)()=NULL);
+  void Modify_Value(uint32_t &value, float min, float max, float unit, void (*f)()=NULL);
   void Modify_Option(uint8_t value, char** options, uint8_t max);
 
 
