@@ -89,7 +89,7 @@
 
 #define CORP_WEBSITE_E "www.marlinfw.org"
 
-#define BUILD_NUMBER "1.3.0-jyers"
+#define BUILD_NUMBER "1.3.1-jyers"
 
 #define DWIN_FONT_MENU font8x16
 #define DWIN_FONT_STAT font10x20
@@ -171,6 +171,7 @@ bool sdprint = false;
 
 int16_t pausetemp, pausebed, pausefan;
 
+bool livemove = false;
 bool liveadjust = false;
 bool bedonly = false;
 float zoffsetvalue = 0;
@@ -1110,7 +1111,8 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
       #define MOVE_Z (MOVE_Y + 1)
       #define MOVE_E (MOVE_Z + ENABLED(HAS_HOTEND))
       #define MOVE_P (MOVE_E + ENABLED(HAS_BED_PROBE))
-      #define MOVE_TOTAL MOVE_P
+      #define MOVE_LIVE (MOVE_P + 1)
+      #define MOVE_TOTAL MOVE_LIVE
 
       switch (item) {
         case MOVE_BACK:
@@ -1190,7 +1192,16 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
             }
             break;
         #endif
-
+        case MOVE_LIVE:
+          if (draw) {
+            Draw_Menu_Item(row, ICON_Axis, (char*)"Live Movement");
+            Draw_Checkbox(row, livemove);
+          }
+          else {
+            livemove = !livemove;
+            Draw_Checkbox(row, livemove);
+          }
+          break;
       }
       break;
     case ManualLevel:
@@ -1224,9 +1235,8 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           }
           else {
             Popup_Handler(MoveWait);
-            gcode.process_subcommands_now_P(PSTR("G0 F4000\nG0 Z10\nG0 X32.5 Y32.5"));
-            char buf[20];
-            sprintf(buf, "G0 F300 Z%f", mlev_z_pos);
+            char buf[80];
+            sprintf(buf, "G0 F4000\nG0 Z10\nG0 X%f Y%f\nG0 F300 Z%f", 32.5f, 32.5f, mlev_z_pos);
             gcode.process_subcommands_now_P(buf);
             planner.synchronize();
             Redraw_Menu();
@@ -1238,9 +1248,8 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           }
           else {
             Popup_Handler(MoveWait);
-            gcode.process_subcommands_now_P(PSTR("G0 F4000\nG0 Z10\nG0 X32.5 Y197.5"));
-            char buf[20];
-            sprintf(buf, "G0 F300 Z%f", mlev_z_pos);
+            char buf[80];
+            sprintf(buf, "G0 F4000\nG0 Z10\nG0 X%f Y%f\nG0 F300 Z%f", 32.5f, (Y_BED_SIZE + Y_MIN_POS) - 32.5f, mlev_z_pos);
             gcode.process_subcommands_now_P(buf);
             planner.synchronize();
             Redraw_Menu();
@@ -1252,9 +1261,8 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           }
           else {
             Popup_Handler(MoveWait);
-            gcode.process_subcommands_now_P(PSTR("G0 F4000\nG0 Z10\nG0 X197.5 Y197.5"));
-            char buf[20];
-            sprintf(buf, "G0 F300 Z%f", mlev_z_pos);
+            char buf[80];
+            sprintf(buf, "G0 F4000\nG0 Z10\nG0 X%f Y%f\nG0 F300 Z%f", (X_BED_SIZE + X_MIN_POS) - 32.5f, (Y_BED_SIZE + Y_MIN_POS) - 32.5f, mlev_z_pos);
             gcode.process_subcommands_now_P(buf);
             planner.synchronize();
             Redraw_Menu();
@@ -1266,9 +1274,8 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           }
           else {
             Popup_Handler(MoveWait);
-            gcode.process_subcommands_now_P(PSTR("G0 F4000\nG0 Z10\nG0 X197.5 Y32.5"));
-            char buf[20];
-            sprintf(buf, "G0 F300 Z%f", mlev_z_pos);
+            char buf[80];
+            sprintf(buf, "G0 F4000\nG0 Z10\nG0 X%f Y%f\nG0 F300 Z%f", (X_BED_SIZE + X_MIN_POS) - 32.5f, 32.5f, mlev_z_pos);
             gcode.process_subcommands_now_P(buf);
             planner.synchronize();
             Redraw_Menu();
@@ -1280,9 +1287,8 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           }
           else {
             Popup_Handler(MoveWait);
-            gcode.process_subcommands_now_P(PSTR("G0 F4000\nG0 Z10\nG0 X117.5 Y117.5"));
-            char buf[20];
-            sprintf(buf, "G0 F300 Z%f", mlev_z_pos);
+            char buf[80];
+            sprintf(buf, "G0 F4000\nG0 Z10\nG0 X%f Y%f\nG0 F300 Z%f", (X_BED_SIZE + X_MIN_POS)/2.0f, (Y_BED_SIZE + Y_MIN_POS)/2.0f, mlev_z_pos);
             gcode.process_subcommands_now_P(buf);
             planner.synchronize();
             Redraw_Menu();
@@ -2791,7 +2797,8 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
     case Advanced:
 
       #define ADVANCED_BACK 0
-      #define ADVANCED_XOFFSET (ADVANCED_BACK + ENABLED(HAS_BED_PROBE))
+      #define ADVANCED_BEEPER (ADVANCED_BACK + 1)
+      #define ADVANCED_XOFFSET (ADVANCED_BEEPER + ENABLED(HAS_BED_PROBE))
       #define ADVANCED_YOFFSET (ADVANCED_XOFFSET + ENABLED(HAS_BED_PROBE))
       #define ADVANCED_LOAD (ADVANCED_YOFFSET + ENABLED(ADVANCED_PAUSE_FEATURE))
       #define ADVANCED_UNLOAD (ADVANCED_LOAD + ENABLED(ADVANCED_PAUSE_FEATURE))
@@ -2808,6 +2815,16 @@ void CrealityDWINClass::Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw/
           }
           else {
             Draw_Menu(Control, CONTROL_ADVANCED);
+          }
+          break;
+        case ADVANCED_BEEPER:
+          if (draw) {
+            Draw_Menu_Item(row, ICON_Version, (char*)"LCD Beeper");
+            Draw_Checkbox(row, beeperenable);
+          }
+          else {
+            beeperenable = !beeperenable;
+            Draw_Checkbox(row, beeperenable);
           }
           break;
         #if ENABLED(HAS_BED_PROBE)
@@ -4246,6 +4263,10 @@ inline void CrealityDWINClass::Value_Control() {
   NOMORE(tempvalue, (valuemax * valueunit));
   Draw_Float(tempvalue/valueunit, selection-scrollpos, true, valueunit);
   DWIN_UpdateLCD();
+  if (active_menu == Move && livemove) {
+    *(float*)valuepointer = tempvalue/valueunit;
+    planner.buffer_line(current_position, manual_feedrate_mm_s[selection-1], active_extruder);
+  }
 }
 
 inline void CrealityDWINClass::Option_Control() {
