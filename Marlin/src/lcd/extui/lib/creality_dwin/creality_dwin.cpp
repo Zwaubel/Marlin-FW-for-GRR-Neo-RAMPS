@@ -266,7 +266,7 @@ CrealityDWINClass CrealityDWIN;
           DEBUG_DELAY(20);
         }
 
-        apply_rotation_xyz(rotation, mx, my, mz);
+        rotation.apply_rotation_xyz(mx, my, mz);
 
         if (DEBUGGING(LEVELING)) {
           DEBUG_ECHOPAIR_F("after rotation = [", mx, 7);
@@ -4683,6 +4683,7 @@ void CrealityDWINClass::Start_Print(bool sd) {
 
 void CrealityDWINClass::Stop_Print() {
   printing = false;
+  sdprint = false;
   thermalManager.zero_fan_speeds();
   thermalManager.disable_all_heaters();
   ui.set_progress(100 * (PROGRESS_SCALE));
