@@ -59,6 +59,10 @@ namespace ExtUI {
     CrealityDWIN.Load_Settings();
   }
 
+  void onPostprocessSettings() {
+    // Called after loading or resetting stored settings
+  }
+
   void onConfigurationStoreWritten(bool success) {}
 
   void onConfigurationStoreRead(bool success) {}
