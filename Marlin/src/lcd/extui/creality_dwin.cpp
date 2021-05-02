@@ -85,6 +85,9 @@ namespace ExtUI {
   #if HAS_PID_HEATING
     void onPidTuning(const result_t rst) {
       switch (rst) {
+        case PID_STARTED:
+          CrealityDWIN.Confirm_Handler((char*)"Starting PID-Tuning");
+          break;
         case PID_BAD_EXTRUDER_NUM:
           CrealityDWIN.Confirm_Handler((char*)"Bad extruder number");
           break;
