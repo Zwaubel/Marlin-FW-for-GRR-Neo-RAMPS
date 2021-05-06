@@ -25,7 +25,7 @@
 
 #if BOTH(CREALITY_DWIN_EXTUI, EXTENSIBLE_UI)
 
-#include "lib/creality_dwin/creality_dwin.h"
+#include "creality_dwin/creality_dwin.h"
 #include "ui_api.h"
 
 namespace ExtUI {
