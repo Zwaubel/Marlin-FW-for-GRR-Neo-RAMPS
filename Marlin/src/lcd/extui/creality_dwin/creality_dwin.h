@@ -36,13 +36,14 @@ enum processID : uint8_t {
 };
 
 enum popupID : uint8_t {
-  Pause, Stop, Resume, SaveLevel, ETemp, ConfFilChange, Level, Home, MoveWait, Heating, Complete, FilLoad, FilChange, UI, TempWarn, Runout, PIDWait
+  Pause, Stop, Resume, SaveLevel, ETemp, ConfFilChange, PurgeMore, Level, Home, MoveWait, Heating, Complete, FilLoad, FilChange, UI, TempWarn, Runout, PIDWait
 };
 
 enum menuID : uint8_t {
   MainMenu,
     Prepare,
       Move,
+      HomeMenu,
       ManualLevel,
       ZOffset,
       Preheat,
@@ -344,6 +345,7 @@ public:
   void Modify_Value(uint16_t &value, float min, float max, float unit, void (*f)()=NULL);
   void Modify_Value(int16_t &value, float min, float max, float unit, void (*f)()=NULL);
   void Modify_Value(uint32_t &value, float min, float max, float unit, void (*f)()=NULL);
+  void Modify_Value(int8_t &value, float min, float max, float unit, void (*f)()=NULL);
   void Modify_Option(uint8_t value, char** options, uint8_t max);
 
 
