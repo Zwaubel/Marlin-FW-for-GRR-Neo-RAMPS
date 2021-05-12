@@ -496,7 +496,7 @@ inline void CrealityDWINClass::Draw_Menu(uint8_t menu, uint8_t select/*=0*/, uin
     last_menu = active_menu;
     if (process == Menu) last_selection = selection;
   }
-  selection = select;
+  selection = min(select, Get_Menu_Size(menu));
   scrollpos = scroll;
   if (selection-scrollpos > MROWS)
     scrollpos = selection - MROWS;
@@ -4235,7 +4235,7 @@ char* CrealityDWINClass::Get_Menu_Title(uint8_t menu) {
   return (char*)"";
 }
 
-int CrealityDWINClass::Get_Menu_Size(uint8_t menu) {
+uint8_t CrealityDWINClass::Get_Menu_Size(uint8_t menu) {
   switch(menu) {
     case Prepare:
       return PREPARE_TOTAL;
@@ -4849,34 +4849,36 @@ inline void CrealityDWINClass::Popup_Control() {
           Redraw_Menu(true);
         }
         break;
-      case ConfFilChange:
-        if (selection==0) {
-          if (thermalManager.temp_hotend[0].target < thermalManager.extrude_min_temp) {
-            Popup_Handler(ETemp);
-          }
-          else {
-            if (thermalManager.temp_hotend[0].celsius < thermalManager.temp_hotend[0].target-2) {
-              Popup_Handler(Heating);
-              thermalManager.wait_for_hotend(0);
+      #if ENABLED(ADVANCED_PAUSE_FEATURE)
+        case ConfFilChange:
+          if (selection==0) {
+            if (thermalManager.temp_hotend[0].target < thermalManager.extrude_min_temp) {
+              Popup_Handler(ETemp);
             }
-            Popup_Handler(FilChange);
-            char buf[20];
-            sprintf(buf, "M600 B1 R%i", thermalManager.temp_hotend[0].target);
-            gcode.process_subcommands_now_P(buf);
+            else {
+              if (thermalManager.temp_hotend[0].celsius < thermalManager.temp_hotend[0].target-2) {
+                Popup_Handler(Heating);
+                thermalManager.wait_for_hotend(0);
+              }
+              Popup_Handler(FilChange);
+              char buf[20];
+              sprintf(buf, "M600 B1 R%i", thermalManager.temp_hotend[0].target);
+              gcode.process_subcommands_now_P(buf);
+            }
+          } else {
+            Redraw_Menu(true);
           }
-        } else {
-          Redraw_Menu(true);
-        }
-        break;
-      case PurgeMore:
-        if (selection==0) {
-          pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
-          Popup_Handler(FilChange);
-        } else {
-          pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT;
-          Redraw_Menu(true, (active_menu==PreheatHotend));
-        }
-        break;
+          break;
+        case PurgeMore:
+          if (selection==0) {
+            pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
+            Popup_Handler(FilChange);
+          } else {
+            pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT;
+            Redraw_Menu(true, (active_menu==PreheatHotend));
+          }
+          break;
+      #endif
       #if HAS_MESH
         case SaveLevel:
           if (selection==0) {
