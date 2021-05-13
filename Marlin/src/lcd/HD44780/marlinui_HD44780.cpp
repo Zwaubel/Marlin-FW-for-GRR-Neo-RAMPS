@@ -594,6 +594,43 @@ FORCE_INLINE void _draw_cooler_status(const char prefix, const bool blink) {
   }
 #endif
 
+#if HAS_COOLER
+FORCE_INLINE void _draw_cooler_status(const char prefix, const bool blink) {
+  const float t1 = thermalManager.degCooler(), t2 = thermalManager.degTargetCooler();
+
+  if (prefix >= 0) lcd_put_wchar(prefix);
+
+  lcd_put_u8str(i16tostr3rj(t1 + 0.5));
+  lcd_put_wchar('/');
+
+  #if !HEATER_IDLE_HANDLER
+    UNUSED(blink);
+  #else
+    if (!blink && thermalManager.heater_idle[thermalManager.idle_index_for_id(heater_id)].timed_out) {
+      lcd_put_wchar(' ');
+      if (t2 >= 10) lcd_put_wchar(' ');
+      if (t2 >= 100) lcd_put_wchar(' ');
+    }
+    else
+  #endif
+      lcd_put_u8str(i16tostr3left(t2 + 0.5));
+
+  if (prefix >= 0) {
+    lcd_put_wchar(LCD_STR_DEGREE[0]);
+    lcd_put_wchar(' ');
+    if (t2 < 10) lcd_put_wchar(' ');
+  }
+}
+#endif
+
+#if ENABLED(LASER_COOLANT_FLOW_METER)
+  FORCE_INLINE void _draw_flowmeter_status() {
+    lcd_put_u8str("~ ");
+    lcd_put_u8str(ftostr11ns(cooler.flowrate));
+    lcd_put_wchar('L');
+  }
+#endif
+
 FORCE_INLINE void _draw_bed_status(const bool blink) {
   _draw_heater_status(H_BED, TERN0(HAS_LEVELING, blink && planner.leveling_active) ? '_' : LCD_STR_BEDTEMP[0], blink);
 }

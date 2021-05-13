@@ -324,6 +324,13 @@
   #endif
 #endif
 
+#if ENABLED(DWIN_CREALITY_LCD)
+  #define HAS_LCD_BRIGHTNESS 1
+  #define MAX_LCD_BRIGHTNESS  255
+  #define MIN_LCD_BRIGHTNESS  1
+  #define DEFAULT_LCD_BRIGHTNESS 255
+#endif
+
 /**
  * Override the SD_DETECT_STATE set in Configuration_adv.h
  * and enable sharing of onboard SD host drives (all platforms but AGCM4)
@@ -2533,7 +2540,7 @@
   #define HAS_TEMPERATURE 1
 #endif
 
-#if HAS_TEMPERATURE && EITHER(HAS_LCD_MENU, DWIN_CREALITY_LCD)
+#if HAS_TEMPERATURE && ANY(HAS_LCD_MENU, DWIN_CREALITY_LCD)
   #ifdef PREHEAT_6_LABEL
     #define PREHEAT_COUNT 6
   #elif defined(PREHEAT_5_LABEL)
@@ -2715,7 +2722,7 @@
  * Advanced Pause - Filament Change
  */
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
-  #if HAS_LCD_MENU || BOTH(EMERGENCY_PARSER, HOST_PROMPT_SUPPORT)
+  #if HAS_LCD_MENU || BOTH(EMERGENCY_PARSER, HOST_PROMPT_SUPPORT) || ENABLED(DWIN_CREALITY_LCD)
     #define M600_PURGE_MORE_RESUMABLE 1
   #endif
   #ifndef FILAMENT_CHANGE_SLOW_LOAD_LENGTH

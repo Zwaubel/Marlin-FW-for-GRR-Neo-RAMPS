@@ -45,17 +45,7 @@
   #define ENCODER_PHASE_3 1
 #endif
 
-#if IS_RRW_KEYPAD
-  #define BTN_OFFSET          0 // Bit offset into buttons for shift register values
-
-  #define BLEN_KEYPAD_F3      0
-  #define BLEN_KEYPAD_F2      1
-  #define BLEN_KEYPAD_F1      2
-  #define BLEN_KEYPAD_DOWN    3
-  #define BLEN_KEYPAD_RIGHT   4
-  #define BLEN_KEYPAD_MIDDLE  5
-  #define BLEN_KEYPAD_UP      6
-  #define BLEN_KEYPAD_LEFT    7
+#if ANY(HAS_DIGITAL_BUTTONS, DWIN_CREALITY_LCD)
 
   #define EN_KEYPAD_F1      _BV(BTN_OFFSET + BLEN_KEYPAD_F1)
   #define EN_KEYPAD_F2      _BV(BTN_OFFSET + BLEN_KEYPAD_F2)
@@ -75,7 +65,7 @@
   #endif
 #endif
 
-#if EITHER(HAS_DIGITAL_BUTTONS, DWIN_CREALITY_LCD)
+#if ANY(HAS_DIGITAL_BUTTONS, DWIN_CREALITY_LCD)
   // Wheel spin pins where BA is 00, 10, 11, 01 (1 bit always changes)
   #define BLEN_A 0
   #define BLEN_B 1
