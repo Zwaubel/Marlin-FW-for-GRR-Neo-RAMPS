@@ -48,6 +48,7 @@ struct BedMeshEditScreenData {
 
 class BedMeshEditScreen : public BedMeshBase, public CachedScreen<BED_MESH_EDIT_SCREEN_CACHE> {
   private:
+    static void makeMeshValid();
     static float getHighlightedValue();
     static void setHighlightedValue(float value);
     static void moveToHighlightedValue();
