@@ -1079,8 +1079,8 @@
   #define HAS_DISPLAY 1
   #define SERIAL_CATCHALL 0
   #ifndef LCD_SERIAL_PORT
-    #ifdef BOARD_BTT_SKR_MINI_E3_V2_0  
-      #define LCD_SERIAL_PORT 1 // SKR Mini E3 V2
+    #if MB(BTT_SKR_MINI_E3_V1_0, BTT_SKR_MINI_E3_V1_2, BTT_SKR_MINI_E3_V2_0, BTT_SKR_E3_TURBO)
+      #define LCD_SERIAL_PORT 1
     #else
       #define LCD_SERIAL_PORT 3 // Creality 4.x board
     #endif
